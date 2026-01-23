@@ -1,8 +1,10 @@
+<div align="center">
+  <img src="examples/md-pdf.svg" alt="md-pdf logo" width="150">
+</div>
+
 # md-pdf
 
 A fast, lightweight command-line tool that converts Markdown files to professional PDF documents using [Typst](https://typst.app).
-
-![md-pdf](examples/md-pdf.svg)
 
 ## Features
 
