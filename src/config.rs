@@ -729,9 +729,9 @@ mod tests {
   #[test]
   fn test_default_config() {
     let config = Config::default();
-    assert_eq!(config.default_template, Some("none".to_string()));
+    assert_eq!(config.default_template, Some("simple".to_string()));
     assert_eq!(config.default_language, Some("en".to_string()));
-    assert_eq!(config.default_toc, Some(false));
+    assert_eq!(config.default_toc, Some(true));
     assert!(config.templates_dir.is_none());
   }
 
@@ -766,6 +766,6 @@ mod tests {
     assert!(none_template.contains("#import \"@preview/cmarker:0.1.7\""));
 
     let simple_template = config.get_template_content("simple").unwrap();
-    assert!(simple_template.contains("tag-badge"));
+    assert!(simple_template.contains("badge(tag.trim())"));
   }
 }

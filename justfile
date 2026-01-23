@@ -9,7 +9,7 @@ app_name := "md-pdf"
 args := ""
 project_directory := justfile_directory()
 release := `git describe --tags --always`
-version := "0.0.1"
+version := "0.1.0"
 url := "https://github.com/tschinz/md-pdf"
 
 ##################################################

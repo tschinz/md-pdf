@@ -1,10 +1,10 @@
 [package]
 name = "md-pdf"
-version = "0.0.1"
-edition = "2024"
-authors = ["Magi3r"]
-license = "MIT OR Apache-2.0"
-description = "Convert markdown files to PDF using typst"
+version = "0.1.0"
+edition = "2021"
+authors = ["tschinz"]
+license = "MIT"
+description = "Convert markdown files to PDF using typst with templating"
 readme = "README.md"
 repository = "https://github.com/tschinz/md-pdf"
 categories = ["command-line-utilities"]
