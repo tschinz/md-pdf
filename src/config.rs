@@ -361,361 +361,304 @@ impl Config {
 
   /// Fallback none template (minimal)
   fn get_fallback_none_template() -> String {
-    r#"
-          #import "@preview/cmarker:0.1.7"
-          #import "@preview/mitex:0.2.6": mitex
+    r#"#import "@preview/cmarker:0.1.8"
+#import "@preview/mitex:0.2.6": mitex
 
-          // Get system inputs
-          #let filepath = sys.inputs.at("filepath", default: "input.md")
-          #let language = sys.inputs.at("language", default: "en")
-          #let show-toc = sys.inputs.at("toc", default: "false") == "true"
+// Get system inputs
+#let filepath = sys.inputs.at("filepath", default: "input.md")
+#let language = sys.inputs.at("language", default: "en")
+#let show-toc = sys.inputs.at("toc", default: "false") == "true"
 
-          // Front matter inputs
-          #let has-frontmatter = sys.inputs.at("has_frontmatter", default: "false") == "true"
-          #let fm-title = sys.inputs.at("fm_title", default: none)
-          #let fm-subtitle = sys.inputs.at("fm_subtitle", default: none)
-          #let fm-author = sys.inputs.at("fm_author", default: none)
-          #let fm-date = sys.inputs.at("fm_date", default: none)
-          #let fm-tags = sys.inputs.at("fm_tags", default: none)
-          #let fm_version = sys.inputs.at("fm_version", default: none)
+// Front matter inputs
+#let has-frontmatter = sys.inputs.at("has_frontmatter", default: "false") == "true"
+#let fm-title = sys.inputs.at("fm_title", default: none)
+#let fm-subtitle = sys.inputs.at("fm_subtitle", default: none)
+#let fm-author = sys.inputs.at("fm_author", default: none)
+#let fm-date = sys.inputs.at("fm_date", default: none)
+#let fm-tags = sys.inputs.at("fm_tags", default: none)
+#let fm_version = sys.inputs.at("fm_version", default: none)
 
-          // Parse tags from comma-separated string
-          #let tags-list = if fm-tags != none { fm-tags.split(",") } else { () }
+// Parse tags from comma-separated string
+#let tags-list = if fm-tags != none { fm-tags.split(",") } else { () }
 
-          // Extract filename from filepath (remove path and .md extension)
-          #let filename = {
-            let path-parts = filepath.split("/")
-            let file = path-parts.last()
-            if file.ends-with(".md") {
-              file.slice(0, file.len() - 3)
-            } else if file.ends-with(".temp.md") {
-              file.slice(0, file.len() - 8)
-            } else {
-              file
-            }
-          }
+// Extract filename from filepath (remove path and .md extension)
+#let filename = {
+  let path-parts = filepath.split("/")
+  let file = path-parts.last()
+  if file.ends-with(".md") {
+    file.slice(0, file.len() - 3)
+  } else if file.ends-with(".temp.md") {
+    file.slice(0, file.len() - 8)
+  } else {
+    file
+  }
+}
 
-          // Use front matter data or defaults
-          #let document-author = if fm-author != none { fm-author } else { default_author }
-          #let document-title = if fm-title != none { fm-title } else { filename }
-          #let document-subtitle = if fm-subtitle != none { fm-subtitle } else { filename }
+// Use front matter data or defaults
+#let document-author = if fm-author != none { fm-author } else { default_author }
+#let document-title = if fm-title != none { fm-title } else { filename }
+#let document-subtitle = if fm-subtitle != none { fm-subtitle } else { filename }
 
-          // Parse date
-          #let document-date = if fm-date != none {
-            // Try to parse the date string
-            let date-str = fm-date
-            if date-str.len() == 10 and date-str.contains("-") {
-              // Format: YYYY-MM-DD
-              let parts = date-str.split("-")
-              if parts.len() == 3 {
-                datetime(year: int(parts.at(0)), month: int(parts.at(1)), day: int(parts.at(2)))
-              } else {
-                datetime.today()
-              }
-            } else {
-              datetime.today()
-            }
-          } else {
-            datetime.today()
-          }
+// Parse date
+#let document-date = if fm-date != none {
+  // Try to parse the date string
+  let date-str = fm-date
+  if date-str.len() == 10 and date-str.contains("-") {
+    // Format: YYYY-MM-DD
+    let parts = date-str.split("-")
+    if parts.len() == 3 {
+      datetime(year: int(parts.at(0)), month: int(parts.at(1)), day: int(parts.at(2)))
+    } else {
+      datetime.today()
+    }
+  } else {
+    datetime.today()
+  }
+} else {
+  datetime.today()
+}
 
-          // Set document properties
-          #set document(
-            author: if document-author != none { document-author } else { "" },
-            title: document-title,
-            keywords: if fm-tags != none { (if document-author != none { document-author } else { "" }, document-title, "md-pdf", ..tags-list) } else { (if document-author != none { document-author } else { "" }, document-title, "md-pdf") },
-            date: document-date
-          )
+// Set document properties
+#set document(
+  author: if document-author != none { document-author } else { "" },
+  title: document-title,
+  keywords: if fm-tags != none { (if document-author != none { document-author } else { "" }, document-title, "md-pdf", ..tags-list) } else { (if document-author != none { document-author } else { "" }, document-title, "md-pdf") },
+  date: document-date
+)
 
-          // Set document language
-          #set text(lang: language)
+// Set document language
+#set text(lang: language)
 
-          // Function to create tag labels
-          #let badge(content) = {
-            let color = rgb("888888")
-            let textcolor = rgb("222222")
-            box(
-              inset: (x: 3pt, y: 2pt),
-              radius: 4pt,
-              fill: color.lighten(70%),
-              stroke: (paint: color, thickness: 0.5pt),
-            )[
-              #text(weight: "bold", size: 6pt, fill:textcolor)[#content]
-          ]
-          }
+// Function to create tag labels
+#let badge(content) = {
+  let color = rgb("888888")
+  let textcolor = rgb("222222")
+  box(
+    inset: (x: 3pt, y: 2pt),
+    radius: 4pt,
+    fill: color.lighten(70%),
+    stroke: (paint: color, thickness: 0.5pt),
+  )[
+    #text(weight: "bold", size: 8pt, fill:textcolor)[#content]
+]
+}
 
-          // Show basic document metadata if front matter exists
-          #if has-frontmatter [
-            #if fm-title != none [
-              #align(center)[
-                #text(size: 18pt, weight: "bold")[#fm-title]
-              ]
-              #v(0.3em)
-            ]
-            #if fm-subtitle != none [
-              #align(center)[
-                #text(size: 14pt, style: "italic")[#fm-subtitle]
-              ]
-              #v(0.3em)
-            ]
-            #let metadata = ()
-            #if document-author != none { metadata.push(document-author) }
-            #if document-date != none { metadata.push(document-date.display()) }
-            #if fm_version != none { metadata.push(fm_version) }
-            #align(center)[
-              #for (i, data) in metadata.enumerate() [
-                #data
-                #if i < metadata.len() - 1 [ \- ]
-              ]
-            ]
+// Show basic document metadata if front matter exists
+#if has-frontmatter [
+  #if fm-title != none [
+    #align(center)[
+      #text(size: 18pt, weight: "bold")[#fm-title]
+    ]
+    #v(0.3em)
+  ]
+  #if fm-subtitle != none [
+    #align(center)[
+      #text(size: 14pt, style: "italic")[#fm-subtitle]
+    ]
+    #v(0.3em)
+  ]
+  #let metadata = ()
+  #if document-author != none { metadata.push(document-author) }
+  #if document-date != none { metadata.push(document-date.display()) }
+  #if fm_version != none { metadata.push(fm_version) }
+  #align(center)[
+    #for (i, data) in metadata.enumerate() [
+      #data
+      #if i < metadata.len() - 1 [ \- ]
+    ]
+  ]
 
-            #if fm-tags != none and tags-list.len() > 0 [
-              #align(center)[
-                #for (i, tag) in tags-list.enumerate() [
-                  #badge(tag.trim())
-                ]
-              ]
-            ]
-            #line(length: 100%, stroke: 0.5pt)
-          ]
+  #if fm-tags != none and tags-list.len() > 0 [
+    #align(center)[
+      #for (i, tag) in tags-list.enumerate() [
+        #badge(tag.trim())
+      ]
+    ]
+  ]
+  #line(length: 100%, stroke: 0.5pt)
+]
 
-          // Show table of contents if requested
-          #if show-toc [
-            #outline()
-            #pagebreak()
-          ]
+// Show table of contents if requested
+#if show-toc [
+  #outline()
+  #pagebreak()
+]
 
-          #cmarker.render(
-            read(filepath),
-            scope: (image: (path, alt: none) => image(path, alt: alt)),
-            math: mitex
-          )
+#cmarker.render(
+  read(filepath),
+  scope: (image: (path, alt: none) => image(path, alt: alt)),
+  math: mitex
+)
 "#.to_string()
   }
 
   /// Fallback simple template
   fn get_fallback_simple_template() -> String {
     r#"#import "@preview/cmarker:0.1.8"
-        #import "@preview/mitex:0.2.6": mitex
-        #import "@preview/hei-synd-thesis:0.2.3": *
+#import "@preview/mitex:0.2.6": mitex
 
-        // Get system inputs
-        #let filepath = sys.inputs.at("filepath", default: "input.md")
-        #let language = sys.inputs.at("language", default: "en")
-        #let show-toc = sys.inputs.at("toc", default: "false") == "true"
+// Get system inputs
+#let filepath = sys.inputs.at("filepath", default: "input.md")
+#let language = sys.inputs.at("language", default: "en")
+#let show-toc = sys.inputs.at("toc", default: "false") == "true"
 
-        // Front matter inputs
-        #let has-frontmatter = sys.inputs.at("has_frontmatter", default: "false") == "true"
-        #let fm-title = sys.inputs.at("fm_title", default: none)
-        #let fm-subtitle = sys.inputs.at("fm_subtitle", default: none)
-        #let fm-author = sys.inputs.at("fm_author", default: none)
-        #let fm-date = sys.inputs.at("fm_date", default: none)
-        #let fm-tags = sys.inputs.at("fm_tags", default: none)
-        #let fm_version = sys.inputs.at("fm_version", default: none)
+// Front matter inputs
+#let has-frontmatter = sys.inputs.at("has_frontmatter", default: "false") == "true"
+#let fm-title = sys.inputs.at("fm_title", default: none)
+#let fm-subtitle = sys.inputs.at("fm_subtitle", default: none)
+#let fm-author = sys.inputs.at("fm_author", default: none)
+#let fm-date = sys.inputs.at("fm_date", default: none)
+#let fm-tags = sys.inputs.at("fm_tags", default: none)
+#let fm_version = sys.inputs.at("fm_version", default: none)
 
-        // Parse tags from comma-separated string
-        #let tags-list = if fm-tags != none { fm-tags.split(",") } else { () }
+// Parse tags from comma-separated string
+#let tags-list = if fm-tags != none { fm-tags.split(",") } else { () }
 
-        // Extract filename from filepath (remove path and .md extension)
-        #let filename = {
-          let path-parts = filepath.split("/")
-          let file = path-parts.last()
-          if file.ends-with(".md") {
-            file.slice(0, file.len() - 3)
-          } else if file.ends-with(".temp.md") {
-            file.slice(0, file.len() - 8)
-          } else {
-            file
-          }
-        }
+// Extract filename from filepath (remove path and .md extension)
+#let filename = {
+  let path-parts = filepath.split("/")
+  let file = path-parts.last()
+  if file.ends-with(".md") {
+    file.slice(0, file.len() - 3)
+  } else if file.ends-with(".temp.md") {
+    file.slice(0, file.len() - 8)
+  } else {
+    file
+  }
+}
 
-        // Use front matter data or defaults
-        #let document-author = if fm-author != none { fm-author } else { none }
-        #let document-title = if fm-title != none { fm-title } else { filename }
-        #let document-subtitle = if fm-subtitle != none { fm-subtitle } else { none }
+// Use front matter data or defaults
+#let document-author = if fm-author != none { fm-author } else { none }
+#let document-title = if fm-title != none { fm-title } else { filename }
+#let document-subtitle = if fm-subtitle != none { fm-subtitle } else { none }
 
-        // Parse date
-        #let document-date = if fm-date != none {
-          // Try to parse the date string
-          let date-str = fm-date
-          if date-str.len() == 10 and date-str.contains("-") {
-            // Format: YYYY-MM-DD
-            let parts = date-str.split("-")
-            if parts.len() == 3 {
-              datetime(year: int(parts.at(0)), month: int(parts.at(1)), day: int(parts.at(2)))
-            } else {
-              datetime.today()
-            }
-          } else {
-            datetime.today()
-          }
-        } else {
-          datetime.today()
-        }
+// Parse date
+#let document-date = if fm-date != none {
+  // Try to parse the date string
+  let date-str = fm-date
+  if date-str.len() == 10 and date-str.contains("-") {
+    // Format: YYYY-MM-DD
+    let parts = date-str.split("-")
+    if parts.len() == 3 {
+      datetime(year: int(parts.at(0)), month: int(parts.at(1)), day: int(parts.at(2)))
+    } else {
+      datetime.today()
+    }
+  } else {
+    datetime.today()
+  }
+} else {
+  datetime.today()
+}
 
-        // Set document properties
-        #set document(
-          author: if document-author != none { document-author } else { "" },
-          title: document-title,
-          keywords: if fm-tags != none { (if document-author != none { document-author } else { "" }, document-title, "md-pdf", ..tags-list) } else { (document-author, document-title, "md-pdf") },
-          date: document-date
-        )
+// Set document properties
+#set document(
+  author: if document-author != none { document-author } else { "" },
+  title: document-title,
+  keywords: if fm-tags != none { (if document-author != none { document-author } else { "" }, document-title, "md-pdf", ..tags-list) } else { (document-author, document-title, "md-pdf") },
+  date: document-date
+)
 
-        // basic properties
-        #set page(margin: (top:3cm, bottom:3cm, left:3cm, right:2.5cm))
+// basic properties
+#set page(margin: (top:3cm, bottom:3cm, left:3cm, right:2.5cm))
 
-        // header and footer
-        #set page(
-          header: context(if here().page() >=2 [
-            #set text(small)
-            #smallcaps[#document-title] #if document-subtitle != none {[\/ #document-subtitle ]}
-            //#line(start: (-0.5em, 0cm), length: 85%, stroke: 0.5pt)
-            #line(start: (-0.5em, 0cm), length: 101%, stroke: 0.5pt)
-            ]),
-          footer: context( if here().page() >=2 [
-              #set text(small)
-              #line(start: (85%, 0cm), length: 15%, stroke: 0.5pt)
+// header and footer
+#set page(
+  header: context(if here().page() >=2 [
+    #set text(10pt)
+    #smallcaps[#document-title]
+    ]),
+  footer: context( if here().page() >=2 [
+      #set text(10pt)
+      #document-author #h(1fr) #document-date.display() #h(1fr) #context counter(page).display("1 / 1", both: true)
+  ]),
+)
 
-              #document-author / #document-date.display() #h(1fr) #context counter(page).display("1 / 1", both: true)
-          ]),
-        )
+// font & language
+#set text(
+  font: (
+    "Libertinus Serif",
+  ),
+  fallback: true,
+  lang: language
+)
 
-        // font & language
-        #set text(
-          font: (
-            "Libertinus Serif",
-            "Fira Sans",
-          ),
-          fallback: true,
-          lang: language
-        )
+// heading
+#show heading: set block(above: 1.2em, below: 1.2em)
+#set heading(numbering: "1.1")
 
-        // heading
-        #show heading: set block(above: 1.2em, below: 1.2em)
-        #set heading(numbering: "1.1")
+// link color
+#show link: it => text(fill:blue, it)
 
-        #show heading.where(level: 1): (it) => {
-          set text(size: larger-p )
-          set block(above: 1.2em, below: 1.2em)
-          if it.numbering != none {
-            let num = numbering(it.numbering, ..counter(heading).at(it.location()))
-            let prefix = num + h(0.5em) + text(code-border)[|] + h(0.5em)
-            unshift-prefix(prefix, it.body)
-          } else {
-            it
-          }
-        }
+// code blocks
+#show raw: set text(
+  font: (
+  "DejaVu Sans Mono",
+  ),
+fallback: true,)
+#show raw.where(block: false): set text(weight: "semibold")
+#show raw.where(block: true): set text(size: 8pt)
 
-        #show heading.where(level: 2): (it) => {
-          if it.numbering != none {
-            let num = numbering(it.numbering, ..counter(heading).at(it.location()))
-            unshift-prefix(num + h(0.8em), it.body)
-          }
-        }
+// Function to create tag labels
+#let badge(content) = {
+  let color = rgb("888888")
+  let textcolor = rgb("222222")
+  box(
+    inset: (x: 3pt, y: 2pt),
+    radius: 4pt,
+    fill: color.lighten(70%),
+    stroke: (paint: color, thickness: 0.5pt),
+  )[
+    #text(weight: "bold", size: 8pt, fill:textcolor)[#content]
+  ]
+}
 
-        // link color
-        #show link: it => text(fill:hei-blue, it)
+// Show basic document metadata if front matter exists
+#if has-frontmatter [
+  #if fm-title != none [
+    #align(center)[
+      #text(size: 18pt, weight: "bold")[#fm-title]
+    ]
+    #v(0.3em)
+  ]
+  #if fm-subtitle != none [
+    #align(center)[
+      #text(size: 14pt, style: "italic")[#fm-subtitle]
+    ]
+    #v(0.3em)
+  ]
+  #let metadata = ()
+  #if document-author != none { metadata.push(document-author) }
+  #if document-date != none { metadata.push(document-date.display()) }
+  #if fm_version != none { metadata.push(fm_version) }
+  #align(center)[
+    #for (i, data) in metadata.enumerate() [
+      #data
+      #if i < metadata.len() - 1 [ \- ]
+    ]
+  ]
 
-        // code blocks
-        #show raw: set text(
-          font: (
-          "Iosevka",
-          "Fira Code",
-          "JetBrains Mono",
-          "DejaVu Sans Mono",
-          ),
-        fallback: true,)
-        #show raw.where(block: false): set text(weight: "semibold")
-        #show raw.where(block: true): set text(size: tiny)
-        #show raw.where(block: true): it => {
-          block(
-            fill: code-bg,
-            width:100%,
-            inset: 7pt,
-            radius: (left:0pt, right: 4pt),
-            stroke: (left: 3pt + luma(80%), rest: 0.1pt + code-border),
-            it,
-          )
-        }
-        #show: codly-init.with()
-        #codly(
-          display-icon: false,
-          languages: codly-languages,
-          zebra-fill: none,
-          stroke: 0.1pt + code-border,
-          radius: 4pt,
-          number-format: (number) => text(luma(210), size:7pt, [#h(1em)#number]),
-          inset: (left:-0.0em, rest:0.3em),
-          fill: code-bg,
-        )
+  #if fm-tags != none and tags-list.len() > 0 [
+    #align(center)[
+      #for (i, tag) in tags-list.enumerate() [
+        #badge(tag.trim())
+      ]
+    ]
+  ]
+  #line(length: 100%, stroke: 0.5pt)
+]
 
-        // Captions
-        #set figure(numbering: "1", supplement: get-supplement)
-        #set figure.caption(separator: " - ") // With a nice separator
-        #set math.equation(numbering: "(1)", supplement: i18n("equation-name"))
+// Show table of contents if requested
+#if show-toc [
+  #outline()
+  #pagebreak()
+]
 
-        #show: word-count
-
-        // Function to create tag labels
-        #let badge(content) = {
-          let color = rgb("888888")
-          let textcolor = rgb("222222")
-          box(
-            inset: (x: 3pt, y: 2pt),
-            radius: 4pt,
-            fill: color.lighten(70%),
-            stroke: (paint: color, thickness: 0.5pt),
-          )[
-            #text(weight: "bold", size: 8pt, fill:textcolor)[#content]
-        ]
-        }
-
-        // Show basic document metadata if front matter exists
-        #if has-frontmatter [
-          #if fm-title != none [
-            #align(center)[
-              #text(size: 18pt, weight: "bold")[#fm-title]
-            ]
-            #v(0.3em)
-          ]
-          #if fm-subtitle != none [
-            #align(center)[
-              #text(size: 14pt, style: "italic")[#fm-subtitle]
-            ]
-            #v(0.3em)
-          ]
-          #let metadata = ()
-          #if document-author != none { metadata.push(document-author) }
-          #if document-date != none { metadata.push(document-date.display()) }
-          #if fm_version != none { metadata.push(fm_version) }
-          #align(center)[
-            #for (i, data) in metadata.enumerate() [
-              #data
-              #if i < metadata.len() - 1 [ \- ]
-            ]
-          ]
-
-          #if fm-tags != none and tags-list.len() > 0 [
-            #align(center)[
-              #for (i, tag) in tags-list.enumerate() [
-                #badge(tag.trim())
-              ]
-            ]
-          ]
-          #line(length: 100%, stroke: 0.5pt)
-        ]
-
-        // Show table of contents if requested
-        #if show-toc [
-          #outline()
-          #pagebreak()
-        ]
-
-        #cmarker.render(
-          read(filepath),
-          scope: (image: (path, alt: none) => image(path, alt: alt)),
-          math: mitex
-        )
+#cmarker.render(
+  read(filepath),
+  scope: (image: (path, alt: none) => image(path, alt: alt)),
+  math: mitex
+)
 "#.to_string()
   }
 }
@@ -763,7 +706,7 @@ mod tests {
     let config = Config::default();
 
     let none_template = config.get_template_content("none").unwrap();
-    assert!(none_template.contains("#import \"@preview/cmarker:0.1.7\""));
+    assert!(none_template.contains("#import \"@preview/cmarker:0.1.8\""));
 
     let simple_template = config.get_template_content("simple").unwrap();
     assert!(simple_template.contains("badge(tag.trim())"));
