@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 ---
+## [0.1.0](https://github.com/tschinz/md-pdf/compare/0.0.1..0.1.0) - 2026-01-23
+
+### 🐛 Bug Fixes
+
+- **(readme)** image resize - ([2da1202](https://github.com/tschinz/md-pdf/commits/2da12022e55ba4c1fef0d37900626c93c18d17a9)) - zas
+
+### 💼 Other
+
+-  [**breaking**]prepare package for crates.io publication - ([40d0c27](https://github.com/tschinz/md-pdf/commits/40d0c279fbfde24a0a7a4dedbb6a19e48bac4dae)) - zas
+-  [**breaking**]prepare package for crates.io publication - ([40d0c27](https://github.com/tschinz/md-pdf/commits/40d0c279fbfde24a0a7a4dedbb6a19e48bac4dae)) - zas
+-  [**breaking**]prepare package for crates.io publication - ([40d0c27](https://github.com/tschinz/md-pdf/commits/40d0c279fbfde24a0a7a4dedbb6a19e48bac4dae)) - zas
+-  [**breaking**]prepare package for crates.io publication - ([40d0c27](https://github.com/tschinz/md-pdf/commits/40d0c279fbfde24a0a7a4dedbb6a19e48bac4dae)) - zas
+
+### ⚙️ Miscellaneous Tasks
+
+- prepare package for crates.io publication - ([40d0c27](https://github.com/tschinz/md-pdf/commits/40d0c279fbfde24a0a7a4dedbb6a19e48bac4dae)) - zas
+
+---
 ## [0.0.1] - 2026-01-23
 
 ### 🚀 Features
@@ -25,6 +43,7 @@ All notable changes to this project will be documented in this file. See [conven
 
 ### ⚙️ Miscellaneous Tasks
 
+- **(release)** prepare for release 0.0.1 - ([e574638](https://github.com/tschinz/md-pdf/commits/e57463860bbc694fcdae3969108d734c4c5fba20)) - zas
 - cliff configuration - ([bbd6f55](https://github.com/tschinz/md-pdf/commits/bbd6f55293446baadfabd7dfa1eecdb4a231a102)) - zas
 - rustfmt configuration - ([bbd6f55](https://github.com/tschinz/md-pdf/commits/bbd6f55293446baadfabd7dfa1eecdb4a231a102)) - zas
 - rustfmt formatting - ([6ea1143](https://github.com/tschinz/md-pdf/commits/6ea11436deac286a0d40cc880eab944b409d93b4)) - zas

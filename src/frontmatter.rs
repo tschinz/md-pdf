@@ -161,6 +161,30 @@ pub fn frontmatter_to_typst_vars(front_matter: &FrontMatter) -> Vec<(String, Str
     vars.push(("fm_version".to_string(), version.clone()));
   }
 
+  // Add all extra/custom fields
+  for (key, value) in &front_matter.extra {
+    let value_str = match value {
+      serde_yaml::Value::String(s) => s.clone(),
+      serde_yaml::Value::Number(n) => n.to_string(),
+      serde_yaml::Value::Bool(b) => b.to_string(),
+      serde_yaml::Value::Sequence(seq) => {
+        // Convert array to comma-separated string
+        seq
+          .iter()
+          .map(|v| match v {
+            serde_yaml::Value::String(s) => s.clone(),
+            serde_yaml::Value::Number(n) => n.to_string(),
+            serde_yaml::Value::Bool(b) => b.to_string(),
+            _ => format!("{:?}", v),
+          })
+          .collect::<Vec<_>>()
+          .join(",")
+      }
+      _ => format!("{:?}", value),
+    };
+    vars.push((key.clone(), value_str));
+  }
+
   // Add boolean flag to indicate front matter is present
   vars.push(("has_frontmatter".to_string(), "true".to_string()));
 
@@ -229,6 +253,11 @@ Content here"#;
 
   #[test]
   fn test_frontmatter_to_typst_vars() {
+    let mut extra = HashMap::new();
+    extra.insert("client".to_string(), serde_yaml::Value::String("ACME Corp".to_string()));
+    extra.insert("budget".to_string(), serde_yaml::Value::Number(serde_yaml::Number::from(50000)));
+    extra.insert("approved".to_string(), serde_yaml::Value::Bool(true));
+
     let fm = FrontMatter {
       title: Some("Test".to_string()),
       subtitle: Some("Subtitle".to_string()),
@@ -239,7 +268,7 @@ Content here"#;
       toc: Some(true),
       template: Some("elegant".to_string()),
       version: Some("1.0.0".to_string()),
-      extra: HashMap::new(),
+      extra,
     };
 
     let vars = frontmatter_to_typst_vars(&fm);
@@ -254,5 +283,37 @@ Content here"#;
     assert!(vars.contains(&("fm_template".to_string(), "elegant".to_string())));
     assert!(vars.contains(&("fm_version".to_string(), "1.0.0".to_string())));
     assert!(vars.contains(&("has_frontmatter".to_string(), "true".to_string())));
+
+    // Test custom fields
+    assert!(vars.contains(&("client".to_string(), "ACME Corp".to_string())));
+    assert!(vars.contains(&("budget".to_string(), "50000".to_string())));
+    assert!(vars.contains(&("approved".to_string(), "true".to_string())));
+  }
+
+  #[test]
+  fn test_custom_frontmatter_fields() {
+    let content = r#"---
+title: "Test Document"
+client: "ACME Corporation"
+contract_number: "CON-2024-001"
+budget: 50000
+approved: true
+reviewers:
+  - "Alice Johnson"
+  - "Bob Smith"
+---
+
+# Content"#;
+
+    let (front_matter, _) = parse_frontmatter(content).unwrap();
+    let fm = front_matter.unwrap();
+    let vars = frontmatter_to_typst_vars(&fm);
+
+    // Check that custom fields are available
+    assert!(vars.contains(&("client".to_string(), "ACME Corporation".to_string())));
+    assert!(vars.contains(&("contract_number".to_string(), "CON-2024-001".to_string())));
+    assert!(vars.contains(&("budget".to_string(), "50000".to_string())));
+    assert!(vars.contains(&("approved".to_string(), "true".to_string())));
+    assert!(vars.contains(&("reviewers".to_string(), "Alice Johnson,Bob Smith".to_string())));
   }
 }

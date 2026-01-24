@@ -3,10 +3,13 @@ title: "md-pdf"
 subtitle: "A comprehensive guide"
 author: "tschinz"
 date: "2026-01-22"
-version: "1.0.0"
+version: "0.1.0"
 language: "en"
 toc: true
+test: "test"
+#template: "none"
 template: "simple"
+#template: "professional"
 tags:
   - documentation
   - markdown
