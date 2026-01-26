@@ -3,24 +3,37 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 ---
-## [0.1.0](https://github.com/tschinz/md-pdf/compare/0.0.1..0.1.0) - 2026-01-23
+
+## [0.0.2](https://github.com/tschinz/md-pdf/compare/0.0.1..0.0.2) - 2026-01-26
+
+### 🚀 Features
+
+- **(example)** add starfleet 1-2 page example - ([6f36357](https://github.com/tschinz/md-pdf/commits/6f363571b3ff9b72093777d1ff3896eb9ba41026)) - zas
+- **(templates)** new brutalist and playful template - ([278dac8](https://github.com/tschinz/md-pdf/commits/278dac80d7eea3d4bc5c19a060258ed9fac08ed6)) - zas
+- add support for custom frontmatter fields as sys.inputs - ([7ffc1f5](https://github.com/tschinz/md-pdf/commits/7ffc1f53ebe794fbeea2bb9f6cb3f91398865372)) - zas
 
 ### 🐛 Bug Fixes
 
 - **(readme)** image resize - ([2da1202](https://github.com/tschinz/md-pdf/commits/2da12022e55ba4c1fef0d37900626c93c18d17a9)) - zas
+- **(templates)** fix minor issues with the none and simple template - ([bcd5f76](https://github.com/tschinz/md-pdf/commits/bcd5f768c4b3515b8a2fe69984e7561c76cb4d18)) - zas
 
 ### 💼 Other
 
--  [**breaking**]prepare package for crates.io publication - ([40d0c27](https://github.com/tschinz/md-pdf/commits/40d0c279fbfde24a0a7a4dedbb6a19e48bac4dae)) - zas
--  [**breaking**]prepare package for crates.io publication - ([40d0c27](https://github.com/tschinz/md-pdf/commits/40d0c279fbfde24a0a7a4dedbb6a19e48bac4dae)) - zas
--  [**breaking**]prepare package for crates.io publication - ([40d0c27](https://github.com/tschinz/md-pdf/commits/40d0c279fbfde24a0a7a4dedbb6a19e48bac4dae)) - zas
--  [**breaking**]prepare package for crates.io publication - ([40d0c27](https://github.com/tschinz/md-pdf/commits/40d0c279fbfde24a0a7a4dedbb6a19e48bac4dae)) - zas
+- [**breaking**]prepare package for crates.io publication - ([40d0c27](https://github.com/tschinz/md-pdf/commits/40d0c279fbfde24a0a7a4dedbb6a19e48bac4dae)) - zas
+- add support for custom frontmatter fields as sys.inputs - ([7ffc1f5](https://github.com/tschinz/md-pdf/commits/7ffc1f53ebe794fbeea2bb9f6cb3f91398865372)) - zas
+- Custom frontmatter fields not available in templates - ([7ffc1f5](https://github.com/tschinz/md-pdf/commits/7ffc1f53ebe794fbeea2bb9f6cb3f91398865372)) - zas
+
+### 📚 Documentation
+
+- update readme and comprehensive guide with the new feature and add logo - ([e0788ee](https://github.com/tschinz/md-pdf/commits/e0788ee28779e8af2592681bcb4531e7159874e4)) - zas
 
 ### ⚙️ Miscellaneous Tasks
 
+- **(guide)** cleanup - ([a0b1da9](https://github.com/tschinz/md-pdf/commits/a0b1da91fbc006520626702f53f18818cbe73a4a)) - zas
 - prepare package for crates.io publication - ([40d0c27](https://github.com/tschinz/md-pdf/commits/40d0c279fbfde24a0a7a4dedbb6a19e48bac4dae)) - zas
 
 ---
+
 ## [0.0.1] - 2026-01-23
 
 ### 🚀 Features

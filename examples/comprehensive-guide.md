@@ -4,7 +4,7 @@ subtitle: "A comprehensive guide"
 logo: "resources/md-pdf.svg"
 author: "tschinz"
 date: "2026-01-22"
-version: "0.1.0"
+version: "0.0.2"
 language: "en"
 toc: true
 template: "simple"
