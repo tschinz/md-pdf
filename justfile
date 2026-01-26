@@ -63,14 +63,6 @@ run args=args:
 
 # Watch a markdown file for changes and rebuild automatically
 watch file="" args=args:
-    #!/usr/bin/env sh
-    if [ -z "{{ file }}" ]; then
-        echo "Usage: just watch <markdown-file>"
-        echo "       just w <markdown-file>      # short alias"
-        echo "Example: just watch examples/comprehensive-guide.md"
-        echo "         just w working-test.md"
-        exit 1
-    fi
     # Convert .md to .pdf for opening
     pdf_file=$(echo "{{ file }}" | sed 's/\.md$/.pdf/')
     cargo run -- "{{ file }}" {{ args }}
@@ -90,25 +82,21 @@ pdf-guide args=args:
 
 # Generate guide PDFs from all example documents using both available templates
 pdf-examples:
-    echo "Generating comprehensive-guide PDFs with all available templates..."
-    cargo run -- -t none -o examples/comprehensive-guide-none.pdf examples/comprehensive-guide.md
-    cargo run -- -t simple -o examples/comprehensive-guide-simple.pdf examples/comprehensive-guide.md
+    echo "Generating starfleet PDFs with all available templates..."
+    cargo run -- -t none -o examples/starfleet-none.pdf examples/starfleet.md
+    cargo run -- -t simple -o examples/starfleet-simple.pdf examples/starfleet.md
+    cargo run -- -t playful -o examples/starfleet-playful.pdf examples/starfleet.md
+    cargo run -- -t brutalist -o examples/starfleet-brutalist.pdf examples/starfleet.md
     echo "✓ Created all PDFs from examples"
     echo "Files generated:"
-    echo "  - examples/comprehensive-guide-none.pdf"
-    echo "  - examples/comprehensive-guide-simple.pdf"
-    {{ open }} examples/comprehensive-guide-none.pdf
-    {{ open }} examples/comprehensive-guide-simple.pdf
-
-# Test configuration system with Star Trek example
-test-config:
-    echo "Testing configuration-based template system..."
-    cd test-config
-    cargo run -- ./../examples/comprehensive-guide.md -o comprehensive-guide-config-test.pdf
-    cargo run -- ./../examples/comprehensive-guide.md -t none -o comprehensive-guide-override-none.pdf
-    echo "✓ Configuration system working correctly"
-    {{ open }} comprehensive-guide-config-test.pdf
-    {{ open }} comprehensive-guide-override-none.pdfs
+    echo "  - examples/starfleet-none.pdf"
+    echo "  - examples/starfleet-simple.pdf"
+    echo "  - examples/starfleet-playful.pdf"
+    echo "  - examples/starfleet-brutalists.pdf"
+    {{ open }} examples/starfleet-none.pdf
+    {{ open }} examples/starfleet-simple.pdf
+    {{ open }} examples/starfleet-playful.pdf
+    {{ open }} examples/starfleet-brutalist.pdf
 
 # Run tests
 test:
