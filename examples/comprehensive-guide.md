@@ -1,6 +1,7 @@
 ---
 title: "md-pdf"
 subtitle: "A comprehensive guide"
+logo: "resources/md-pdf.svg"
 author: "tschinz"
 date: "2026-01-22"
 version: "0.1.0"
@@ -19,13 +20,11 @@ tags:
 
 # Overview
 
-![md-pdf logo](./md-pdf.svg)
-
-## What is md-pdf?
-
 **md-pdf** is a powerful, lightweight command-line tool that converts Markdown files into professional PDF documents. Built with Rust and powered by the Typst typesetting system, it provides fast, high-quality document generation.
 
 md-pdf bridges the gap between Markdown's simplicity and PDF's professional presentation. It's designed for developers, writers, researchers, and anyone who needs to create beautiful documents from Markdown source files.
+
+![md-pdf logo](./resources/md-pdf-wide.svg)
 
 ## Key Benefits
 
@@ -43,7 +42,7 @@ md-pdf bridges the gap between Markdown's simplicity and PDF's professional pres
 
 Before installing md-pdf, you need:
 
-### 1. Rust Toolchain (Optional, for building from source)
+### Rust Toolchain (Optional, for building from source)
 
 If you plan to build from source:
 
@@ -61,7 +60,7 @@ cargo --version
 
 Visit [rust-lang.org](https://www.rust-lang.org/tools/install) for more details.
 
-### 2. Typst CLI (Required)
+### Typst CLI (Required)
 
 Typst is the typesetting engine that powers PDF generation:
 
@@ -75,13 +74,12 @@ typst --version
 
 Visit [typst.app](https://typst.app/) for more details.
 
-### 3. Fonts
+### Fonts (optional)
 
-The default template `simple` uses some fonts which are optional.
+Some templates using custom fonts. If they are not installed a fallback will be used.
 
+- [Fira Sans and Fira Mono](https://github.com/mozilla/Fira)
 - [Iosevka](https://typeof.net/Iosevka/)
-- [Fira Sans](https://fonts.google.com/specimen/Fira+Sans)
-- [JetBrains Mono](https://www.jetbrains.com/lp/mono/)
 
 ## Installing md-pdf
 
@@ -250,8 +248,29 @@ The template system controls the visual appearance and layout of your PDF docume
 
 ## Built-in Templates
 
-- `none` Template
-- `simple` Template
+### `None`
+
+Minimal template with basic styling
+
+![](resources/starfleet-none.png)
+
+### `simple`
+
+Clean template with headers and footers
+
+![](resources/starfleet-simple.png)
+
+### `playful`
+
+Colorful Dieter Rams-inspired design
+
+![](resources/starfleet-playful.png)
+
+### `brutalist`
+
+Raw, stark monospace aesthetic
+
+![](resources/starfleet-brutalist.png)
 
 ## Template Selection Priority
 

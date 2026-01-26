@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="examples/md-pdf.svg" alt="md-pdf logo" width="150">
+  <img src="img/md-pdf.svg" alt="md-pdf logo" width="150">
 </div>
 
 # md-pdf
@@ -61,30 +61,46 @@ md-pdf --watch document.md
 md-pdf --check-links document.md
 
 # Use specific template
+md-pdf document.md -t none
+md-pdf document.md -t simple
 md-pdf document.md -t playful
+md-pdf document.md -t brutalist
 ```
 
 ## Usage
 
 ```
-md-pdf [OPTIONS] <INPUT>
+Convert markdown files to PDF using typst with templating
+
+Usage: md-pdf [OPTIONS] [INPUT]
+
+Arguments:
+  [INPUT]  Path to the input Markdown file
 
 Options:
-  -o, --output <FILE>       Output PDF file
-  -t, --template <NAME>     Template to use [default: none]
-  -w, --watch               Watch for changes and rebuild
-      --check-links         Validate external links
-      --list-templates      Show available templates
-      --show-config         Show configuration
-  -h, --help               Print help
+  -o, --output <OUTPUT>      Path to the output PDF file
+  -t, --template <TEMPLATE>  list the templates and select the one you want [default: none]
+  -w, --watch                Watch the input file for changes and rebuild automatically
+      --check-links          Check all links in the markdown file and display warnings for unreachable links
+      --list-templates       List all available templates
+      --create-config        Create default configuration file
+      --show-config          Show configuration file locations and settings
+  -h, --help                 Print help
+  -V, --version              Print version
 ```
 
 ## Templates
 
 - `none` - Minimal styling (default)
 - `simple` - Professional with headers/footers
-- `playful` - Colorful Dieter Rams inspired design
+- `playful` - colorful inspired by Dieter Rams
+- `brutalist` - Raw, bold, stark design with high contrast
 - You can add you own templates
+
+![](examples/resources/starfleet-none.png)
+![](examples/resources/starfleet-simple.png)
+![](examples/resources/starfleet-playful.png)
+![](examples/resources/starfleet-brutalist.png)
 
 ## Front Matter
 
