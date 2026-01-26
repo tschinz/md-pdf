@@ -290,6 +290,7 @@ impl Config {
       match template_name {
         "none" => Ok(Self::get_fallback_none_template()),
         "simple" => Ok(Self::get_fallback_simple_template()),
+        "playful" => Ok(Self::get_fallback_playful_template()),
         _ => Err(
           format!(
             "Template '{}' not found in templates directory: {}",
@@ -348,6 +349,12 @@ impl Config {
       let simple_template_path = templates_dir.join("simple.typ");
       if !simple_template_path.exists() {
         fs::write(&simple_template_path, Self::get_fallback_simple_template())?;
+      }
+
+      // Create playful template file
+      let playful_template_path = templates_dir.join("playful.typ");
+      if !playful_template_path.exists() {
+        fs::write(&playful_template_path, Self::get_fallback_playful_template())?;
       }
     }
 
@@ -661,6 +668,343 @@ fallback: true,)
 )
 "#.to_string()
   }
+
+  /// Fallback playful template (Dieter Rams inspired with subtle colors)
+  fn get_fallback_playful_template() -> String {
+    r#"#import "@preview/cmarker:0.1.8"
+        #import "@preview/mitex:0.2.6": mitex
+
+        // Get system inputs
+        #let filepath = sys.inputs.at("filepath", default: "input.md")
+        #let language = sys.inputs.at("language", default: "en")
+        #let show-toc = sys.inputs.at("toc", default: "false") == "true"
+
+        // Front matter inputs
+        #let has-frontmatter = sys.inputs.at("has_frontmatter", default: "false") == "true"
+        #let fm-title = sys.inputs.at("fm_title", default: none)
+        #let fm-subtitle = sys.inputs.at("fm_subtitle", default: none)
+        #let fm-author = sys.inputs.at("fm_author", default: none)
+        #let fm-date = sys.inputs.at("fm_date", default: none)
+        #let fm-tags = sys.inputs.at("fm_tags", default: none)
+        #let fm_version = sys.inputs.at("fm_version", default: none)
+
+        // Parse tags from comma-separated string
+        #let tags-list = if fm-tags != none { fm-tags.split(",") } else { () }
+
+        // Extract filename from filepath
+        #let filename = {
+          let path-parts = filepath.split("/")
+          let file = path-parts.last()
+          if file.ends-with(".md") {
+            file.slice(0, file.len() - 3)
+          } else if file.ends-with(".temp.md") {
+            file.slice(0, file.len() - 8)
+          } else {
+            file
+          }
+        }
+
+        // Use front matter data or defaults
+        #let document-author = if fm-author != none { fm-author } else { none }
+        #let document-title = if fm-title != none { fm-title } else { filename }
+        #let document-subtitle = if fm-subtitle != none { fm-subtitle } else { none }
+
+        // Parse date
+        #let document-date = if fm-date != none {
+          let date-str = fm-date
+          if date-str.len() == 10 and date-str.contains("-") {
+            let parts = date-str.split("-")
+            if parts.len() == 3 {
+              datetime(year: int(parts.at(0)), month: int(parts.at(1)), day: int(parts.at(2)))
+            } else {
+              datetime.today()
+            }
+          } else {
+            datetime.today()
+          }
+        } else {
+          datetime.today()
+        }
+
+        // Dieter Rams inspired color palette - subtle, functional
+        #let primary-blue = rgb("2563eb")     // Clean blue
+        #let accent-orange = rgb("f97316")    // Warm orange accent
+        #let text-gray = rgb("374151")        // Readable dark gray
+        #let light-gray = rgb("f3f4f6")       // Subtle background
+        #let border-gray = rgb("d1d5db")      // Gentle borders
+        #let success-green = rgb("10b981")    // Functional green
+
+        // Set document properties
+        #set document(
+          author: if document-author != none { document-author } else { "" },
+          title: document-title,
+          keywords: if fm-tags != none { (if document-author != none { document-author } else { "" }, document-title, "md-pdf", ..tags-list) } else { (document-author, document-title, "md-pdf") },
+          date: document-date
+        )
+
+        // Page setup with generous margins for readability
+        #set page(
+          margin: (top: 3.5cm, bottom: 3cm, left: 3cm, right: 2.5cm),
+          background: rect(
+            width: 100%,
+            height: 100%,
+            fill: white,
+            stroke: none
+          )
+        )
+
+        // Clean header with subtle color
+        #set page(
+          header: context(if here().page() >= 2 [
+            #set text(size: 9pt, fill: text-gray)
+            #grid(
+              columns: (1fr, auto),
+              align: (left, right),
+              [#text(weight: "medium")[#document-title] #if document-subtitle != none {text(style: "italic")[\/ #document-subtitle ]}],
+              [#text(fill: primary-blue, weight: "medium")[Page #counter(page).display()]]
+            )
+            #v(-2pt)
+            #line(length: 100%, stroke: 1pt + primary-blue.lighten(70%))
+          ]),
+          footer: context(if here().page() >= 2 [
+            #set text(size: 8pt, fill: text-gray.lighten(20%))
+            #line(length: 100%, stroke: 0.5pt + border-gray)
+            #v(3pt)
+            #grid(
+              columns: (1fr, auto),
+              align: (left, right),
+              [#if document-author != none [#document-author] else [] / #document-date.display()],
+              [#text(fill: primary-blue)[md-pdf]]
+            )
+          ]),
+        )
+
+        // Typography - clean, readable fonts
+        #set text(
+          font: ("IBM Plex Sans", "Helvetica Neue", "Arial"),
+          size: 11pt,
+          fill: text-gray,
+          lang: language,
+          fallback: true
+        )
+
+        // Heading styles with playful colors
+        #show heading: set block(above: 1.4em, below: 1em)
+        #set heading(numbering: "1.1")
+
+        #show heading.where(level: 1): it => {
+          set text(size: 20pt, weight: "bold", fill: primary-blue)
+          set block(above: 1.8em, below: 1.2em)
+          if it.numbering != none {
+            let num = numbering(it.numbering, ..counter(heading).at(it.location()))
+            block(
+              fill: primary-blue.lighten(90%),
+              inset: (x: 12pt, y: 8pt),
+              radius: 6pt,
+              stroke: 1pt + primary-blue.lighten(60%)
+            )[
+              #text(fill: primary-blue, weight: "bold")[#num] #h(8pt) #it.body
+            ]
+          } else {
+            block(
+              fill: primary-blue.lighten(90%),
+              inset: (x: 12pt, y: 8pt),
+              radius: 6pt,
+              stroke: 1pt + primary-blue.lighten(60%)
+            )[#it.body]
+          }
+        }
+
+        #show heading.where(level: 2): it => {
+          set text(size: 16pt, weight: "semibold", fill: accent-orange)
+          set block(above: 1.4em, below: 0.8em)
+          if it.numbering != none {
+            let num = numbering(it.numbering, ..counter(heading).at(it.location()))
+            [#text(fill: accent-orange)[#num] #h(6pt) #it.body]
+            #v(-4pt)
+            #line(length: 60%, stroke: 2pt + accent-orange.lighten(60%))
+          } else {
+            it
+            #v(-4pt)
+            #line(length: 60%, stroke: 2pt + accent-orange.lighten(60%))
+          }
+        }
+
+        #show heading.where(level: 3): it => {
+          set text(size: 14pt, weight: "medium", fill: success-green.darken(10%))
+          if it.numbering != none {
+            let num = numbering(it.numbering, ..counter(heading).at(it.location()))
+            [#text(fill: success-green)[#num] #h(4pt) #it.body]
+          } else {
+            it
+          }
+        }
+
+        // Link styling
+        #show link: it => text(fill: primary-blue, underline: true, it)
+
+        // Code blocks with subtle styling
+        #show raw: set text(
+          font: ("JetBrains Mono", "Fira Code", "Monaco", "Consolas"),
+          fallback: true
+        )
+        #show raw.where(block: false): it => {
+          box(
+            fill: light-gray,
+            inset: (x: 3pt, y: 2pt),
+            radius: 3pt,
+            stroke: 0.5pt + border-gray
+          )[
+            #text(fill: text-gray, weight: "medium", size: 10pt)[#it]
+          ]
+        }
+        #show raw.where(block: true): it => {
+          set text(size: 10pt)
+          block(
+            fill: light-gray,
+            width: 100%,
+            inset: 12pt,
+            radius: 8pt,
+            stroke: 1pt + border-gray,
+            [
+              #it
+            ]
+          )
+        }
+
+        // Lists with colored bullets
+        #set list(indent: 12pt, body-indent: 6pt)
+        #show list: it => {
+          set text(fill: text-gray)
+          it
+        }
+
+        // Quotes with accent border
+        #show quote: it => {
+          set text(style: "italic", fill: text-gray.lighten(10%))
+          block(
+            fill: light-gray,
+            inset: (left: 16pt, rest: 12pt),
+            radius: 6pt,
+            stroke: (left: 4pt + accent-orange, rest: 1pt + border-gray)
+          )[#it]
+        }
+
+        // Tables with clean styling
+        #show table: it => {
+          set text(size: 10pt)
+          block(
+            stroke: 1pt + border-gray,
+            fill: white,
+            radius: 6pt,
+            clip: true
+          )[#it]
+        }
+
+        // Figure captions
+        #set figure(numbering: "1", supplement: [Figure])
+        #set figure.caption(separator: " — ")
+        #show figure.caption: it => {
+          set text(size: 10pt, style: "italic", fill: text-gray.lighten(20%))
+          it
+        }
+
+        // Tag badge function
+        #let badge(content) = {
+          box(
+            inset: (x: 6pt, y: 3pt),
+            radius: 12pt,
+            fill: primary-blue.lighten(80%),
+            stroke: 1pt + primary-blue.lighten(40%)
+          )[
+            #text(weight: "medium", size: 8pt, fill: primary-blue.darken(20%))[#content]
+          ]
+        }
+
+        // Document header with playful design
+        #if has-frontmatter [
+          // Title section with gradient-like effect
+          #if fm-title != none [
+            #align(center)[
+              #block(
+                fill: gradient.linear(primary-blue.lighten(95%), white),
+                inset: (x: 24pt, y: 16pt),
+                radius: 12pt,
+                stroke: 1pt + primary-blue.lighten(70%)
+              )[
+                #text(size: 24pt, weight: "bold", fill: primary-blue)[#fm-title]
+              ]
+            ]
+            #v(0.5em)
+          ]
+
+          #if fm-subtitle != none [
+            #align(center)[
+              #text(size: 16pt, style: "italic", fill: accent-orange)[#fm-subtitle]
+            ]
+            #v(0.5em)
+          ]
+
+          // Metadata section
+          #let metadata = ()
+          #if document-author != none { metadata.push([#text(weight: "medium")[#document-author]]) }
+          #if document-date != none { metadata.push([#document-date.display()]) }
+          #if fm_version != none { metadata.push([Version #fm_version]) }
+
+          #if metadata.len() > 0 [
+            #align(center)[
+              #set text(size: 11pt, fill: text-gray)
+              #for (i, data) in metadata.enumerate() [
+                #data
+                #if i < metadata.len() - 1 [ #text(fill: border-gray)[•] ]
+              ]
+            ]
+            #v(0.3em)
+          ]
+
+          // Tags with colorful badges
+          #if fm-tags != none and tags-list.len() > 0 [
+            #align(center)[
+              #for (i, tag) in tags-list.enumerate() [
+                #badge(tag.trim())
+                #if i < tags-list.len() - 1 [ #h(4pt) ]
+              ]
+            ]
+            #v(0.5em)
+          ]
+
+          // Decorative separator
+          #align(center)[
+            #line(length: 80%, stroke: 2pt + gradient.linear(primary-blue, accent-orange, success-green))
+          ]
+          #v(0.8em)
+        ]
+
+        // Table of contents with styling
+        #if show-toc [
+          #align(center)[
+            #text(size: 18pt, weight: "bold", fill: primary-blue)[Contents]
+          ]
+          #v(0.5em)
+          #block(
+            fill: light-gray,
+            inset: 16pt,
+            radius: 8pt,
+            stroke: 1pt + border-gray
+          )[
+            #outline(indent: auto)
+          ]
+          #pagebreak()
+        ]
+
+        // Render the main content
+        #cmarker.render(
+          read(filepath),
+          scope: (image: (path, alt: none) => image(path, alt: alt)),
+          math: mitex
+        )
+"#.to_string()
+  }
 }
 
 #[cfg(test)]
@@ -710,5 +1054,8 @@ mod tests {
 
     let simple_template = config.get_template_content("simple").unwrap();
     assert!(simple_template.contains("badge(tag.trim())"));
+
+    let playful_template = config.get_template_content("playful").unwrap();
+    assert!(playful_template.contains("primary-blue"));
   }
 }

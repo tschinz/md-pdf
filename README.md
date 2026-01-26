@@ -61,7 +61,7 @@ md-pdf --watch document.md
 md-pdf --check-links document.md
 
 # Use specific template
-md-pdf document.md -t simple
+md-pdf document.md -t playful
 ```
 
 ## Usage
@@ -83,6 +83,7 @@ Options:
 
 - `none` - Minimal styling (default)
 - `simple` - Professional with headers/footers
+- `playful` - Colorful Dieter Rams inspired design
 - You can add you own templates
 
 ## Front Matter
