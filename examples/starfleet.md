@@ -45,7 +45,7 @@ fn safe_warp_factor(integrity: f64) -> f64 {
 }
 ```
 
-Use `warp_core::engage()` for FTL travel.
+Use `warp_core::engage()` for FTL travel;
 
 ### Tactical Status
 

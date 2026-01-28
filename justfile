@@ -87,16 +87,19 @@ pdf-examples:
     cargo run -- -t simple -o examples/starfleet-simple.pdf examples/starfleet.md
     cargo run -- -t playful -o examples/starfleet-playful.pdf examples/starfleet.md
     cargo run -- -t brutalist -o examples/starfleet-brutalist.pdf examples/starfleet.md
+    cargo run -- -t darko -o examples/starfleet-darko.pdf examples/starfleet.md
     echo "✓ Created all PDFs from examples"
     echo "Files generated:"
     echo "  - examples/starfleet-none.pdf"
     echo "  - examples/starfleet-simple.pdf"
     echo "  - examples/starfleet-playful.pdf"
     echo "  - examples/starfleet-brutalists.pdf"
+    echo "  - examples/starfleet-darko.pdf"
     {{ open }} examples/starfleet-none.pdf
     {{ open }} examples/starfleet-simple.pdf
     {{ open }} examples/starfleet-playful.pdf
     {{ open }} examples/starfleet-brutalist.pdf
+    {{ open }} examples/starfleet-darko.pdf
 
 # Run tests
 test:

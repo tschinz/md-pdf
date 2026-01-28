@@ -272,6 +272,12 @@ Raw, stark monospace aesthetic
 
 ![](resources/starfleet-brutalist.png)
 
+### `darko`
+
+May the dark side be with you
+
+![](resources/starfleet-darko.png)
+
 ## Template Selection Priority
 
 Templates are chosen in this hierarchical order:

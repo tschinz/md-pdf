@@ -65,6 +65,7 @@ md-pdf document.md -t none
 md-pdf document.md -t simple
 md-pdf document.md -t playful
 md-pdf document.md -t brutalist
+md-pdf document.md -t darko
 ```
 
 ## Usage
@@ -99,6 +100,8 @@ Options:
   ![](examples/resources/starfleet-playful.png)
 - `brutalist` - Raw, bold, stark design with high contrast
   ![](examples/resources/starfleet-brutalist.png)
+- `darko` - May the dark side be with you
+  ![](examples/resources/starfleet-darko.png)
 - You can add you own templates
 
 ## Front Matter
