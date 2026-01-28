@@ -175,12 +175,12 @@ pub fn frontmatter_to_typst_vars(front_matter: &FrontMatter) -> Vec<(String, Str
             serde_yaml::Value::String(s) => s.clone(),
             serde_yaml::Value::Number(n) => n.to_string(),
             serde_yaml::Value::Bool(b) => b.to_string(),
-            _ => format!("{:?}", v),
+            _ => format!("{v:?}"),
           })
           .collect::<Vec<_>>()
           .join(",")
       }
-      _ => format!("{:?}", value),
+      _ => format!("{value:?}"),
     };
     vars.push((key.clone(), value_str));
   }

@@ -316,7 +316,9 @@ impl Config {
       match template_name {
         "none" => Ok(Self::get_fallback_none_template()),
         "simple" => Ok(Self::get_fallback_simple_template()),
+        "playful" => Ok(Self::get_fallback_playful_template()),
         "brutalist" => Ok(Self::get_fallback_brutalist_template()),
+        "darko" => Ok(Self::get_fallback_darko_template()),
         _ => Err(
           format!(
             "Template '{}' not found in templates directory: {}",
@@ -1963,5 +1965,8 @@ mod tests {
 
     let brutalist_template = config.get_template_content("brutalist").unwrap();
     assert!(brutalist_template.contains("Brutalist"));
+
+    let darko_template = config.get_template_content("darko").unwrap();
+    assert!(darko_template.contains("Darko"));
   }
 }
