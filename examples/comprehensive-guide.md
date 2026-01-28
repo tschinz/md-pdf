@@ -9,11 +9,11 @@ language: "en"
 toc: true
 template: "simple"
 tags:
-  - documentation
-  - markdown
-  - pdf-conversion
-  - typst
   - user-guide
+  - documentation
+  - md-pdf
+  - markdown to pdf
+  - typst
   - configuration
   - templates
 ---
@@ -90,7 +90,7 @@ Install directly from the Git repository using cargo:
 cargo install --git https://github.com/tschinz/md-pdf
 
 # Install specific version/tag
-cargo install --git https://github.com/tschinz/md-pdf --tag v0.0.1
+cargo install --git https://github.com/tschinz/md-pdf --tag v0.0.2
 ```
 
 ### First Run & Auto-Setup
@@ -112,7 +112,7 @@ On first run, md-pdf automatically creates:
 
 - **Configuration file**: `~/.config/md-pdf/config.ron`
 - **Templates directory**: `~/.config/md-pdf/templates/`
-- **Template files**: `none.typ` and `simple.typ`
+- **Template files**: `none.typ`, `simple.typ`, `playful.typ` and `brutalist.typ`
 
 ### Verification
 
@@ -306,15 +306,20 @@ These variables are automatically provided by md-pdf:
 
 ### Front Matter Variables
 
-All YAML front matter fields become template variables. Common fields:
+All YAML front matter fields become template variables.All fields are optional. Common fields are:
 
-| Field     | Variable Name | Type   | Example Value       | Usage            |
-| --------- | ------------- | ------ | ------------------- | ---------------- |
-| `title`   | `title`       | String | `"My Document"`     | Document title   |
-| `author`  | `author`      | String | `"John Doe"`        | Document author  |
-| `date`    | `date`        | String | `"2024-01-22"`      | Publication date |
-| `version` | `version`     | String | `"1.0.0"`           | Document version |
-| `tags`    | `tags`        | Array  | `["docs", "guide"]` | Document tags    |
+| Field          | Variable Name  | Type   | Example Value       | Usage                                                                                |
+| -------------- | -------------- | ------ | ------------------- | ------------------------------------------------------------------------------------ |
+| `title`        | `title`        | String | `"My Document"`     | Document title                                                                       |
+| `subtitle`     | `subtitle`     | String | `"Guide"`           | Document subtitle                                                                    |
+| `author`       | `author`       | String | `"John Doe"`        | Document author                                                                      |
+| `logo`         | `logo`         | String | `"./logo.png"`      | Rectangular logo                                                                     |
+| `date`         | `date`         | String | `"2024-01-22"`      | Publication date                                                                     |
+| `version`      | `version`      | String | `"1.0.0"`           | Document version                                                                     |
+| `tags`         | `tags`         | Array  | `["docs", "guide"]` | Document tags                                                                        |
+| `participants` | `participants` | Array  | `["Him", "Her"]`    | List of participants                                                                 |
+| `language`     | `language`     | String | `"en"`              | Document language [`en`, `de`, `fr`]                                                 |
+| `template`     | `template`     | String | `"brutalist"`       | Template name [`brutalist`, `playful`, `simple`, `none`, `your custom templatename`] |
 
 ### Custom Fields
 

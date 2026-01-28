@@ -92,27 +92,32 @@ Options:
 ## Templates
 
 - `none` - Minimal styling (default)
+  ![](examples/resources/starfleet-none.png)
 - `simple` - Professional with headers/footers
+  ![](examples/resources/starfleet-simple.png)
 - `playful` - colorful inspired by Dieter Rams
+  ![](examples/resources/starfleet-playful.png)
 - `brutalist` - Raw, bold, stark design with high contrast
+  ![](examples/resources/starfleet-brutalist.png)
 - You can add you own templates
-
-![](examples/resources/starfleet-none.png)
-![](examples/resources/starfleet-simple.png)
-![](examples/resources/starfleet-playful.png)
-![](examples/resources/starfleet-brutalist.png)
 
 ## Front Matter
 
-Add metadata to your markdown:
+Add metadata to your markdown, all elements are optional:
 
 ```yaml
 ---
 title: "My Document"
+subtitle: "Subtitle"
+logo: "path/to/logo.png"
 author: "Your Name"
 date: "2026-01-23"
-template: "simple"
+version: "0.0.1"
+language: "en"
 toc: true
+tags: ["tag1", "tag2"]
+participants: ["Participant1", "Participant2"]
+template: "simple"
 ---
 # Content starts here
 ```
