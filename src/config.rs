@@ -407,9 +407,12 @@ impl Config {
 #let fm-date = sys.inputs.at("fm_date", default: none)
 #let fm-tags = sys.inputs.at("fm_tags", default: none)
 #let fm-version = sys.inputs.at("fm_version", default: none)
+#let fm-logo = sys.inputs.at("logo", default: none)
+#let fm-participants = sys.inputs.at("participants", default: none)
 
 // Parse tags from comma-separated string
 #let tags-list = if fm-tags != none { fm-tags.split(",") } else { () }
+#let participants-list = if fm-participants != none { fm-participants.split(",") } else { () }
 
 // Extract filename from filepath (remove path and .md extension)
 #let filename = {
@@ -456,10 +459,10 @@ impl Config {
   date: document-date
 )
 
-// Set document language
+// set basic properties
 #set text(lang: language)
 
-// Function to create tag labels
+// badge function
 #let badge(content) = {
   let color = rgb("888888")
   let textcolor = rgb("222222")
@@ -487,6 +490,9 @@ impl Config {
     ]
     #v(0.3em)
   ]
+  // logo
+  #if fm-logo != none {[#figure(image(fm-logo,width:4cm))]}
+  // metadata (author, date, version)
   #let metadata = ()
   #if document-author != none { metadata.push(document-author) }
   #if document-date != none { metadata.push(document-date.display()) }
@@ -498,17 +504,58 @@ impl Config {
     ]
   ]
 
-  #if fm-tags != none and tags-list.len() > 0 [
-    #align(center)[
-      #for (i, tag) in tags-list.enumerate() [
-        #badge(tag.trim())
-      ]
-    ]
+  #if fm-tags != none and tags-list.len() > 0 or fm-participants != none and participants-list.len() > 0 [
+    #align(center)[#line(length: 100%, stroke: 0.5pt)]
   ]
-  #line(length: 100%, stroke: 0.5pt)
+  // tags
+  #if fm-tags != none and tags-list.len() > 0 [
+    #table(
+      columns: (20%, 80%),
+      align: (right+horizon, left+horizon),
+      stroke: none,
+      [#smallcaps[
+        #if language == "de" {[
+          *Tags*
+        ]} else if language == "fr" {[
+          *Balises*
+        ]} else {[
+          *Tags*
+        ]}
+      ]],
+      [
+        #for (i, tag) in tags-list.enumerate() [
+          #badge(tag.trim())
+        ]
+      ]
+    )
+  ]
+  // participants
+  #if fm-participants != none and participants-list.len() > 0 [
+    #table(
+      columns: (20%, 80%),
+      align: (right+horizon, left+horizon),
+      stroke: none,
+      [#smallcaps[
+        #if language == "de" {[
+          *Teilnehmer*
+        ]} else if language == "fr" {[
+          *Participants*
+        ]} else {[
+          *Participants*
+        ]}
+      ]],
+      [
+        #for (i, participants) in participants-list.enumerate() [
+          #badge(participants.trim())
+        ]
+      ]
+    )
+  ]
+
+  #align(center)[#line(length: 100%, stroke: 0.5pt)]
 ]
 
-// Show table of contents if requested
+// table of contents
 #if show-toc [
   #outline()
   #pagebreak()
@@ -541,9 +588,12 @@ impl Config {
 #let fm-date = sys.inputs.at("fm_date", default: none)
 #let fm-tags = sys.inputs.at("fm_tags", default: none)
 #let fm-version = sys.inputs.at("fm_version", default: none)
+#let fm-logo = sys.inputs.at("logo", default: none)
+#let fm-participants = sys.inputs.at("participants", default: none)
 
 // Parse tags from comma-separated string
 #let tags-list = if fm-tags != none { fm-tags.split(",") } else { () }
+#let participants-list = if fm-participants != none { fm-participants.split(",") } else { () }
 
 // Extract filename from filepath (remove path and .md extension)
 #let filename = {
@@ -592,10 +642,18 @@ impl Config {
 
 // basic properties
 #set page(margin: (top:3cm, bottom:3cm, left:3cm, right:2.5cm))
+
 // header and footer
 #set page(
   header: context(if here().page() >=2 [
-    #smallcaps[#document-title]
+    #table(
+      columns: (80%, 20%),
+      stroke: none,
+      inset: -0.5em,
+      align: (x, y) => (left+bottom, right+top).at(x),
+      [#smallcaps[#document-title] #if document-subtitle != none {[| #smallcaps[#document-subtitle] ]}],
+      [#if fm-logo != none {[#v(1.2cm)#image(fm-logo,width:2cm)]}]
+    )
     ]),
   footer: context( if here().page() >=2 [
       #set text(10pt)
@@ -628,7 +686,7 @@ fallback: true,)
 #show raw.where(block: false): set text(weight: "semibold")
 #show raw.where(block: true): set text(size: 8pt)
 
-// Function to create tag labels
+// badge function
 #let badge(content) = {
   let color = rgb("888888")
   let textcolor = rgb("222222")
@@ -644,18 +702,23 @@ fallback: true,)
 
 // Show basic document metadata if front matter exists
 #if has-frontmatter [
+  // title
   #if fm-title != none [
     #align(center)[
       #text(size: 18pt, weight: "bold")[#fm-title]
     ]
     #v(0.3em)
   ]
+  // subtitle
   #if fm-subtitle != none [
     #align(center)[
       #text(size: 14pt, style: "italic")[#fm-subtitle]
     ]
     #v(0.3em)
   ]
+  // logo
+  #if fm-logo != none {[#figure(image(fm-logo,width:4cm))]}
+  // metadata (author, date, version)
   #let metadata = ()
   #if document-author != none { metadata.push(document-author) }
   #if document-date != none { metadata.push(document-date.display()) }
@@ -666,17 +729,57 @@ fallback: true,)
       #if i < metadata.len() - 1 [ \- ]
     ]
   ]
-
-  #if fm-tags != none and tags-list.len() > 0 [
-    #align(center)[
-      #for (i, tag) in tags-list.enumerate() [
-        #badge(tag.trim())
-      ]
-    ]
+  #if fm-tags != none and tags-list.len() > 0 or fm-participants != none and participants-list.len() > 0 [
+    #align(center)[#line(length: 90%, stroke: 0.5pt)]
   ]
-  #line(length: 100%, stroke: 0.5pt)
+  // tags
+  #if fm-tags != none and tags-list.len() > 0 [
+    #table(
+      columns: (20%, 80%),
+      align: (right, left),
+      stroke: none,
+      [#smallcaps[
+        #if language == "de" {[
+          *Tags*
+        ]} else if language == "fr" {[
+          *Balises*
+        ]} else {[
+          *Tags*
+        ]}
+      ]],
+      [
+        #for (i, tag) in tags-list.enumerate() [
+          #badge(tag.trim())
+        ]
+      ]
+    )
+  ]
+  // participants
+  #if fm-participants != none and participants-list.len() > 0 [
+    #table(
+      columns: (20%, 80%),
+      align: (right+horizon, left+horizon),
+      stroke: none,
+      [#smallcaps[
+        #if language == "de" {[
+          *Teilnehmer*
+        ]} else if language == "fr" {[
+          *Participants*
+        ]} else {[
+          *Participants*
+        ]}
+      ]],
+      [
+        #for (i, participants) in participants-list.enumerate() [
+          #badge(participants.trim())
+        ]
+      ]
+    )
+  ]
+
+  #align(center)[#line(length: 90%, stroke: 0.5pt)]
 ]
-// Show table of contents if requested
+// table of contents
 #if show-toc [
   #outline()
   #pagebreak()
@@ -709,9 +812,11 @@ fallback: true,)
 #let fm-date = sys.inputs.at("fm_date", default: none)
 #let fm-tags = sys.inputs.at("fm_tags", default: none)
 #let fm-version = sys.inputs.at("fm_version", default: none)
+#let fm-logo = sys.inputs.at("logo", default: none)
+#let fm-participants = sys.inputs.at("participants", default: none)
 
 // Dieter Rams inspired color palette
-#let rams-white = rgb("f7f8f6ff")
+#let rams-white = rgb("ffffffff")
 #let rams-light-grey = rgb("d9d2c6ff")
 #let rams-dark-grey = rgb("4a4a4aff")
 #let rams-black = rgb("1f1f1fff")
@@ -722,6 +827,7 @@ fallback: true,)
 
 // Parse tags from comma-separated string
 #let tags-list = if fm-tags != none { fm-tags.split(",") } else { () }
+#let participants-list = if fm-participants != none { fm-participants.split(",") } else { () }
 
 // Extract filename from filepath (remove path and .md extension)
 #let filename = {
@@ -766,19 +872,29 @@ fallback: true,)
   date: document-date
 )
 
-// Clean page layout with generous margins - Rams principle of "as little design as possible"
+// basic properties
 #set page(
   margin: (top: 3.5cm, bottom: 3cm, left: 3cm, right: 3cm),
   fill: rams-white
 )
 
-// Minimal header and footer - functional but unobtrusive
+// header and footer
 #set page(
   header: context(if here().page() >= 2 [
     #set text(9pt, fill: rams-dark-grey)
-    #document-title
-    #line(length: 100%, stroke: (paint: rams-light-grey, thickness: 0.5pt))
-    #h(1fr)
+    #table(
+      columns: (80%, 20%),
+      stroke: none,
+      inset: -0.5em,
+      align: (x, y) => (left+bottom, right+top).at(x),
+      [#smallcaps[#document-title] #if document-subtitle != none {[| #smallcaps[#document-subtitle] ]}],
+      [#if fm-logo != none {[#v(1.2cm)#image(fm-logo,width:2cm)]}]
+    )
+    #if fm-logo != none {[
+      #line(length: 85%, stroke: (paint: rams-light-grey, thickness: 0.5pt))
+    ]} else {[
+      #line(length: 101%, stroke: (paint: rams-light-grey, thickness: 0.5pt))
+    ]}
   ]),
   footer: context(if here().page() >= 2 [
     #line(length: 100%, stroke: (paint: rams-light-grey, thickness: 0.5pt))
@@ -788,7 +904,7 @@ fallback: true,)
   ])
 )
 
-// Typography - clean, readable, functional
+// font & language
 #set text(
   font: ("Fira Sans", "Liberation Sans"),
   fallback: true,
@@ -797,7 +913,7 @@ fallback: true,)
   fill: rams-black
 )
 
-// Moderate heading sizes - not too big, hierarchical but restrained
+// heading
 #show heading: set block(above: 1.4em, below: 0.8em)
 #set heading(numbering: "1.1")
 
@@ -822,10 +938,10 @@ fallback: true,)
   fill: rams-red
 )
 
-// Functional accent colors for links
+// link color
 #show link: it => text(fill: rams-green, it)
 
-// Clean code styling
+// code blocks
 #show raw: set text(
   font: ("Fira Code", "DejaVu Sans Mono"),
   fallback: true,
@@ -840,15 +956,15 @@ fallback: true,)
   stroke: (paint: rams-brown.lighten(60%), thickness: 0.5pt)
 )
 
-// Lists with subtle styling
+// Lists
 #set list(indent: 1em, marker: ([•], [◦], [▪]))
 #set enum(indent: 1em)
 
-// Subtle emphasis with color accents
+// Emphasis
 #show emph: set text(style: "italic", fill: rams-orange.darken(10%))
 #show strong: set text(weight: "semibold", fill: rams-red)
 
-// Colorful tag design with rotating colors
+// badge function
 #let badge(content, index: 0) = {
   let colors = (rams-green, rams-brown, rams-orange, rams-red)
   let color = colors.at(calc.rem(index, colors.len()))
@@ -862,29 +978,30 @@ fallback: true,)
   ]
 }
 
-// Clean document header - functional information display
+// Show basic document metadata if front matter exists
 #if has-frontmatter [
   #v(1em)
-
+  // title
   #if fm-title != none [
     #align(left)[
       #text(size: 20pt, weight: "medium", fill: rams-black)[#fm-title]
     ]
     #v(0.5em)
   ]
-
+  // subtitle
   #if fm-subtitle != none [
     #align(left)[
       #text(size: 13pt, style: "italic", fill: rams-dark-grey)[#fm-subtitle]
     ]
     #v(0.8em)
   ]
-
-  // Minimal metadata presentation
+  // logo
+  #if fm-logo != none {[#figure(image(fm-logo,width:4cm))]}
+  // metadata (author, date, version)
   #let metadata = ()
   #if document-author != none { metadata.push(document-author) }
   #if document-date != none { metadata.push(document-date.display()) }
-  #if fm-version != none { metadata.push("v" + fm-version) }
+  #if fm-version != none { metadata.push(fm-version) }
 
   #if metadata.len() > 0 [
     #set text(10pt, fill: rams-dark-grey)
@@ -895,21 +1012,59 @@ fallback: true,)
     #v(0.5em)
   ]
 
+  #if fm-tags != none and tags-list.len() > 0 or fm-participants != none and participants-list.len() > 0 [
+    #line(length: 100%, stroke: (paint: rams-brown.lighten(50%), thickness: 1pt))
+  ]
+  // tags
   #if fm-tags != none and tags-list.len() > 0 [
-    #v(0.3em)
-    #for (i, tag) in tags-list.enumerate() [
-      #badge(tag.trim(), index: i)
-      #if i < tags-list.len() - 1 [ ]
-    ]
-    #v(0.8em)
+    #table(
+      columns: (20%, 80%),
+      align: (right+horizon, left+horizon),
+      stroke: none,
+      [#smallcaps[
+        #if language == "de" {[
+          Tags
+        ]} else if language == "fr" {[
+          Balises
+        ]} else {[
+          Tags
+        ]}
+      ]],
+      [
+        #for (i, tag) in tags-list.enumerate() [
+          #badge(tag.trim(), index: tags-list.len()-i)
+        ]
+      ]
+    )
+  ]
+  // participants
+  #if fm-participants != none and participants-list.len() > 0 [
+    #table(
+      columns: (20%, 80%),
+      align: (right+horizon, left+horizon),
+      stroke: none,
+      [#smallcaps[
+        #if language == "de" {[
+          Teilnehmer
+        ]} else if language == "fr" {[
+          Participants
+        ]} else {[
+          Participants
+        ]}
+      ]],
+      [
+        #for (i, participants) in participants-list.enumerate() [
+          #badge(participants.trim(), index: i)
+        ]
+      ]
+    )
   ]
 
-  // Subtle separator line with warm accent
+  // separator
   #line(length: 100%, stroke: (paint: rams-brown.lighten(50%), thickness: 1pt))
-  #v(1.5em)
 ]
 
-// Clean table of contents
+// table of contents
 #if show-toc [
   #set text(fill: rams-dark-grey)
   #show outline.entry: it => {
@@ -982,9 +1137,11 @@ fallback: true,)
 #let fm-date = sys.inputs.at("fm_date", default: none)
 #let fm-tags = sys.inputs.at("fm_tags", default: none)
 #let fm-version = sys.inputs.at("fm_version", default: none)
+#let fm-logo = sys.inputs.at("logo", default: none)
+#let fm-participants = sys.inputs.at("participants", default: none)
 
-// Dieter Rams brutalist color palette
-#let rams-white = rgb("f7f8f6ff")
+// Dieter Rams color palette
+#let rams-white = rgb("ffffffff")
 #let rams-light-grey = rgb("d9d2c6ff")
 #let rams-dark-grey = rgb("4a4a4aff")
 #let rams-black = rgb("1f1f1fff")
@@ -995,6 +1152,7 @@ fallback: true,)
 
 // Parse tags from comma-separated string
 #let tags-list = if fm-tags != none { fm-tags.split(",") } else { () }
+#let participants-list = if fm-participants != none { fm-participants.split(",") } else { () }
 
 // Extract filename from filepath
 #let filename = {
@@ -1039,13 +1197,13 @@ fallback: true,)
   date: document-date
 )
 
-// Raw page setup - minimal margins, stark white background
+// basic properties
 #set page(
   margin: (top: 2.5cm, bottom: 2.5cm, left: 2.5cm, right: 2.5cm),
   fill: rams-white
 )
 
-// Brutal header and footer - stark, functional blocks
+// header and footer
 #set page(
   header: context(if here().page() >= 2 [
     #set text(size: 9pt, fill: rams-black, font: ("Fira Mono"), weight: "semibold")
@@ -1055,7 +1213,7 @@ fallback: true,)
       radius: 0pt,
       width: 100%
     )[
-      #text(fill: rams-white)[#upper(document-title)]
+      #text(fill: rams-white)[#upper(document-title)] #if document-subtitle != none {[#text(fill: rams-white)[ | #upper(document-subtitle)] ]}
     ]
   ]),
   footer: context(if here().page() >= 2 [
@@ -1066,13 +1224,13 @@ fallback: true,)
     #grid(
       columns: (1fr, auto),
       align: (left, right),
-      [#if document-author != none [#upper(document-author) /] #document-date.display()],
+      [#if document-author != none [#upper(document-author) |] #document-date.display()],
       [#context counter(page).display("1 / 1", both: true)]
     )
   ])
 )
 
-// Raw typography - monospace for stark, functional feel
+// font & language
 #set text(
   font: ("Fira Mono"),
   size: 10pt,
@@ -1081,7 +1239,7 @@ fallback: true,)
   fallback: true
 )
 
-// Brutal heading styles - blocky, angular, not too big
+// heading
 #show heading: set block(above: 1.2em, below: 0.8em)
 #set heading(numbering: "1.1")
 
@@ -1135,10 +1293,10 @@ fallback: true,)
   line(length: 60%, stroke: 2pt + rams-dark-grey)
 }
 
-// Raw link styling - no decoration, functional color
+// link color
 #show link: it => text(fill: rams-green, weight: "bold", it)
 
-// Brutal code blocks - stark monospace with harsh borders
+// code blocks
 #show raw: set text(
   font: ("Iosevka", "DejaVu Sans Mono"),
   fallback: true
@@ -1166,18 +1324,18 @@ fallback: true,)
   ]
 }
 
-// Raw lists - minimal styling, functional markers
+// lists
 #set list(indent: 8pt, body-indent: 4pt, marker: ([■], [▪], [▫]))
 #show list: it => {
   set text(fill: rams-black)
   it
 }
 
-// Brutal emphasis styling
+// emphasis
 #show emph: set text(style: "italic", fill: rams-dark-grey, weight: "bold")
 #show strong: set text(weight: "black", fill: rams-black)
 
-// Raw quotes - stark left border
+// quotes
 #show quote: it => {
   set text(fill: rams-black, weight: "bold")
   block(
@@ -1188,17 +1346,16 @@ fallback: true,)
   )[#it]
 }
 
-// Brutal tables - grid-like, stark
 #show table: it => {
   set text(size: 9pt, weight: "bold")
-  block(
+  set table(
     stroke: 2pt + rams-black,
     fill: rams-white,
-    radius: 0pt,
-  )[#it]
+  )
+  it
 }
 
-// Raw figure captions
+// figure captions
 #set figure(numbering: "1", supplement: [FIG])
 #set figure.caption(separator: " - ")
 #show figure.caption: it => {
@@ -1213,8 +1370,8 @@ fallback: true,)
   ]
 }
 
-// Brutal tag function - stark rectangular badges
-#let brutal-tag(content) = {
+// badge function
+#let badge(content) = {
   box(
     fill: rams-orange,
     inset: (x: 6pt, y: 3pt),
@@ -1225,9 +1382,9 @@ fallback: true,)
   ]
 }
 
-// Brutal document header
+// Show basic document metadata if front matter exists
 #if has-frontmatter [
-  // Title section - stark block
+  // title
   #if fm-title != none [
     #align(left)[
       #block(
@@ -1242,7 +1399,7 @@ fallback: true,)
     ]
     #v(0.8em)
   ]
-
+  // subtitle
   #if fm-subtitle != none [
     #align(left)[
       #block(
@@ -1256,13 +1413,13 @@ fallback: true,)
     ]
     #v(0.8em)
   ]
-
-  // Metadata section - stark grid
+  // logo
+  #if fm-logo != none {[#figure(image(fm-logo,width:4cm))]}
+  // metadata (author, date, version)
   #let metadata = ()
   #if document-author != none { metadata.push([#upper(document-author)]) }
   #if document-date != none { metadata.push([#document-date.display()]) }
-  #if fm-version != none { metadata.push([V#fm-version]) }
-
+  #if fm-version != none { metadata.push([#fm-version]) }
   #if metadata.len() > 0 [
     #set text(size: 10pt, fill: rams-black, weight: "bold")
     #grid(
@@ -1278,21 +1435,59 @@ fallback: true,)
     #v(0.8em)
   ]
 
-  // Tags - rectangular blocks
+  #if fm-tags != none and tags-list.len() > 0 or fm-participants != none and participants-list.len() > 0 [
+    #line(length: 100%, stroke: 2pt + rams-black)
+  ]
+  // tags
   #if fm-tags != none and tags-list.len() > 0 [
-    #for (i, tag) in tags-list.enumerate() [
-      #brutal-tag(tag.trim())
-      #if i < tags-list.len() - 1 [ #h(4pt) ]
-    ]
-    #v(0.8em)
+    #table(
+      columns: (20%, 80%),
+      align: (right, left),
+      stroke: none,
+      [#smallcaps[
+        #if language == "de" {[
+          *Tags*
+        ]} else if language == "fr" {[
+          *Balises*
+        ]} else {[
+          *Tags*
+        ]}
+      ]],
+      [
+        #for (i, tag) in tags-list.enumerate() [
+          #badge(tag.trim())
+        ]
+      ]
+    )
+  ]
+  // participants
+  #if fm-participants != none and participants-list.len() > 0 [
+    #table(
+      columns: (20%, 80%),
+      align: (right, left),
+      stroke: none,
+      [#smallcaps[
+        #if language == "de" {[
+          *Teilnehmer*
+        ]} else if language == "fr" {[
+          *Participants*
+        ]} else {[
+          *Participants*
+        ]}
+      ]],
+      [
+        #for (i, participants) in participants-list.enumerate() [
+          #badge(participants.trim())
+        ]
+      ]
+    )
   ]
 
-  // Separator - thick line
-  #line(length: 100%, stroke: 4pt + rams-black)
-  #v(1.5em)
+  // separator
+  #line(length: 100%, stroke: 2pt + rams-black)
 ]
 
-// Brutal table of contents
+// table of contents
 #if show-toc [
   #text(size: 16pt, weight: "black", fill: rams-black)[CONTENTS]
   #v(0.5em)
