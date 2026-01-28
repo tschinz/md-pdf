@@ -1,11 +1,15 @@
 ---
 title: "USS Enterprise Tech Brief"
 subtitle: "Markdown Elements Guide"
+logo: "resources/starfleet.svg"
 author: "Lt. Commander Data"
 date: "2024-12-20"
-tags: ["starfleet", "technical", "markdown"]
 version: "NCC-1701-D"
+language: "en"
 toc: false
+tags: ["starfleet", "technical", "markdown"]
+participants: ["Jean-Luc Picard", "William Riker", "Data"]
+template: "simple"
 ---
 
 # USS Enterprise Tech Brief
@@ -61,7 +65,7 @@ Use `warp_core::engage()` for FTL travel.
 - [x] Tricorder
 - [ ] Environmental suit
 
-Key equations: v = wf³c, use `scan_freq = 2.4_GHz`
+Key equations: $v = wf^3c$, use `scan_freq = 2.4_GHz`
 
 ---
 
