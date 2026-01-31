@@ -118,6 +118,20 @@ clean:
     cargo clean
     rm -f *.pdf test.md
 
+# Generate and open rustdoc documentation
+doc:
+    @echo "Generating rustdoc documentation..."
+    cargo doc --no-deps --document-private-items
+    @echo "✓ Documentation generated"
+    @echo "Opening documentation in browser..."
+    {{ open }} target/doc/{{ crate_name }}/index.html
+
+# Generate rustdoc documentation without opening
+doc-build:
+    @echo "Generating rustdoc documentation..."
+    cargo doc --no-deps --document-private-items
+    @echo "✓ Documentation generated at target/doc/{{ crate_name }}/index.html"
+
 # Show help for the compiled binary
 help:
     cargo run -- --help

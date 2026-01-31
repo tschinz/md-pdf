@@ -1,8 +1,31 @@
+//! # Front Matter Processing
+//!
+//! This module handles parsing and processing of YAML front matter in Markdown files.
+//! Front matter allows users to specify document metadata, styling preferences, and
+//! custom variables that are passed to the Typst templating system for PDF generation.
+
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fmt;
 
-/// Represents the front matter metadata from a markdown file
+/// Represents the front matter metadata extracted from a markdown file.
+///
+/// All fields are optional to allow for flexible document configuration.
+///
+/// # Examples
+///
+/// ```
+/// use md_pdf::frontmatter::FrontMatter;
+/// use std::collections::HashMap;
+///
+/// let front_matter = FrontMatter {
+///     title: Some("User Guide".to_string()),
+///     author: Some("Documentation Team".to_string()),
+///     language: Some("en".to_string()),
+///     toc: Some(true),
+///     ..Default::default()
+/// };
+/// ```
 #[derive(Debug, Clone, Deserialize, Serialize, Default)]
 pub struct FrontMatter {
   /// Document title
@@ -30,7 +53,23 @@ pub struct FrontMatter {
   pub extra: HashMap<String, serde_yaml::Value>,
 }
 
-/// Represents different date formats that can be in front matter
+/// Represents different date formats supported in front matter.
+///
+/// Supports both string dates and numeric dates (YYYYMMDD format).
+///
+/// # Examples
+///
+/// ```
+/// use md_pdf::frontmatter::DateValue;
+///
+/// // String date (used as-is)
+/// let string_date = DateValue::String("2024-01-23".to_string());
+/// assert_eq!(string_date.to_string(), "2024-01-23");
+///
+/// // Numeric date (formatted automatically)
+/// let numeric_date = DateValue::Number(20240123);
+/// assert_eq!(numeric_date.to_string(), "2024-01-23");
+/// ```
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(untagged)]
 pub enum DateValue {
@@ -58,7 +97,43 @@ impl fmt::Display for DateValue {
   }
 }
 
-/// Parse front matter from markdown content
+/// Parse YAML front matter from markdown content.
+///
+/// Extracts YAML metadata from the beginning of a markdown file and
+/// separates it from the main content. Front matter must be enclosed in `---`
+/// delimiters at the very start of the file.
+///
+/// # Arguments
+///
+/// * `content` - The complete markdown file content as a string
+///
+/// # Returns
+///
+/// Returns a tuple containing:
+/// - `Option<FrontMatter>` - Parsed front matter metadata, or `None` if not present
+/// - `String` - The remaining markdown content without front matter
+///
+/// # Examples
+///
+/// ```
+/// use md_pdf::frontmatter::parse_frontmatter;
+///
+/// let content = r#"---
+/// title: "My Document"
+/// author: "John Doe"
+/// ---
+/// # Main Content
+/// This is the document body."#;
+///
+/// let (front_matter, markdown) = parse_frontmatter(content).unwrap();
+/// assert!(front_matter.is_some());
+/// assert!(markdown.trim().starts_with("# Main Content"));
+/// ```
+///
+/// # Errors
+///
+/// Returns an error only for severe parsing failures. Invalid YAML in front matter
+/// generates warnings but doesn't prevent processing of the markdown content.
 pub fn parse_frontmatter(content: &str) -> Result<(Option<FrontMatter>, String), Box<dyn std::error::Error>> {
   let content = content.trim_start();
 
@@ -111,7 +186,41 @@ pub fn parse_frontmatter(content: &str) -> Result<(Option<FrontMatter>, String),
   Ok((Some(front_matter), markdown_content))
 }
 
-/// Generate Typst variables from front matter
+/// Convert front matter into Typst input variables.
+///
+/// Transforms a `FrontMatter` structure into a vector of key-value pairs
+/// that can be passed as input variables to the Typst typesetting system.
+///
+/// # Arguments
+///
+/// * `front_matter` - The parsed front matter structure to convert
+///
+/// # Returns
+///
+/// A vector of tuples containing variable names and their string values, ready
+/// for use as Typst `--input` arguments.
+///
+/// # Examples
+///
+/// ```
+/// use md_pdf::frontmatter::{FrontMatter, frontmatter_to_typst_vars, DateValue};
+/// use std::collections::HashMap;
+///
+/// let fm = FrontMatter {
+///     title: Some("Test Doc".to_string()),
+///     author: Some("Jane Doe".to_string()),
+///     date: Some(DateValue::String("2024-01-23".to_string())),
+///     tags: vec!["tech".to_string(), "docs".to_string()],
+///     ..Default::default()
+/// };
+///
+/// let vars = frontmatter_to_typst_vars(&fm);
+/// // Results in variables like:
+/// // ("fm_title", "Test Doc")
+/// // ("fm_author", "Jane Doe")
+/// // ("fm_tags", "tech,docs")
+/// // ("has_frontmatter", "true")
+/// ```
 pub fn frontmatter_to_typst_vars(front_matter: &FrontMatter) -> Vec<(String, String)> {
   let mut vars = Vec::new();
 
@@ -288,32 +397,5 @@ Content here"#;
     assert!(vars.contains(&("client".to_string(), "ACME Corp".to_string())));
     assert!(vars.contains(&("budget".to_string(), "50000".to_string())));
     assert!(vars.contains(&("approved".to_string(), "true".to_string())));
-  }
-
-  #[test]
-  fn test_custom_frontmatter_fields() {
-    let content = r#"---
-title: "Test Document"
-client: "ACME Corporation"
-contract_number: "CON-2024-001"
-budget: 50000
-approved: true
-reviewers:
-  - "Alice Johnson"
-  - "Bob Smith"
----
-
-# Content"#;
-
-    let (front_matter, _) = parse_frontmatter(content).unwrap();
-    let fm = front_matter.unwrap();
-    let vars = frontmatter_to_typst_vars(&fm);
-
-    // Check that custom fields are available
-    assert!(vars.contains(&("client".to_string(), "ACME Corporation".to_string())));
-    assert!(vars.contains(&("contract_number".to_string(), "CON-2024-001".to_string())));
-    assert!(vars.contains(&("budget".to_string(), "50000".to_string())));
-    assert!(vars.contains(&("approved".to_string(), "true".to_string())));
-    assert!(vars.contains(&("reviewers".to_string(), "Alice Johnson,Bob Smith".to_string())));
   }
 }

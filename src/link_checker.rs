@@ -1,9 +1,39 @@
+//! # Link Validation
+//!
+//! This module provides functionality to validate HTTP/HTTPS links found in Markdown files.
+//! It extracts links using regex patterns and checks their availability by making HTTP requests.
+
 use std::collections::HashSet;
 use std::fs;
 use std::path::Path;
 use std::time::Duration;
 
-/// Check all links in a markdown file and display warnings for unreachable links
+/// Check all links in a markdown file and display warnings for unreachable links.
+///
+/// Scans the markdown file for HTTP/HTTPS links and validates each one by making
+/// HTTP requests. Reports successful and failed links with detailed feedback.
+///
+/// # Arguments
+///
+/// * `md_file` - Path to the markdown file to scan for links
+///
+/// # Examples
+///
+/// ```no_run
+/// use std::path::Path;
+/// use md_pdf::link_checker::check_links_in_file;
+///
+/// let file_path = Path::new("document.md");
+/// check_links_in_file(file_path)?;
+/// # Ok::<(), Box<dyn std::error::Error>>(())
+/// ```
+///
+/// # Errors
+///
+/// Returns an error if:
+/// - The markdown file cannot be read
+/// - HTTP client cannot be created
+/// - Network operations fail
 pub fn check_links_in_file(md_file: &Path) -> Result<(), Box<dyn std::error::Error>> {
   let content = fs::read_to_string(md_file)?;
   let links = extract_links(&content);
@@ -69,7 +99,30 @@ pub fn check_links_in_file(md_file: &Path) -> Result<(), Box<dyn std::error::Err
   Ok(())
 }
 
-/// Extract all links from markdown content
+/// Extract all HTTP/HTTPS links from markdown content.
+///
+/// Uses regex patterns to find links in various markdown formats and returns
+/// a deduplicated list of valid HTTP/HTTPS URLs.
+///
+/// # Arguments
+///
+/// * `content` - The markdown content to scan for links
+///
+/// # Returns
+///
+/// A vector of unique HTTP/HTTPS URLs found in the content.
+///
+/// # Examples
+///
+/// ```
+/// use md_pdf::link_checker::extract_links;
+///
+/// let content = "Visit [GitHub](https://github.com) and <https://rust-lang.org>";
+/// let links = extract_links(content);
+/// assert_eq!(links.len(), 2);
+/// assert!(links.contains(&"https://github.com".to_string()));
+/// assert!(links.contains(&"https://rust-lang.org".to_string()));
+/// ```
 fn extract_links(content: &str) -> Vec<String> {
   let mut links = HashSet::new();
 

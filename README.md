@@ -146,3 +146,5 @@ See [`examples/comprehensive-guide.md`](examples/comprehensive-guide.md) for ful
 ```
 md-pdf example/comprehensive-guide.md
 ```
+
+> Rustdoc AI generated

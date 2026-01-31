@@ -1,3 +1,30 @@
+//! # md-pdf: Markdown to PDF Converter
+//!
+//! A fast, lightweight command-line tool that converts Markdown files to professional PDF documents
+//! using [Typst](https://typst.app) as the backend rendering engine.
+//!
+//! ## Features
+//!
+//! - **Fast conversion** powered by Typst
+//! - **Professional output** with built-in templates
+//! - **Zero configuration** - works out of the box
+//! - **Watch mode** for live preview during editing
+//! - **Link validation** checks external URLs
+//! - **Rich metadata** support via YAML front matter
+//!
+//! ## Usage
+//!
+//! ```bash
+//! # Convert markdown to PDF
+//! md-pdf document.md
+//!
+//! # Watch for changes (live preview)
+//! md-pdf --watch document.md
+//!
+//! # Use specific template
+//! md-pdf document.md -t simple
+//! ```
+
 mod args;
 mod config;
 mod convert;
@@ -11,6 +38,24 @@ use link_checker::check_links_in_file;
 use std::path::Path;
 use std::process;
 
+/// Entry point for the md-pdf application.
+///
+/// Handles command-line argument parsing and orchestrates PDF conversion,
+/// template listing, link checking, and file watching operations.
+///
+/// # Examples
+///
+/// ```no_run
+/// // This is the main function - typically called by the runtime
+/// main();
+/// ```
+///
+/// # Panics
+///
+/// Exits the process with code 1 if:
+/// - Input file doesn't exist
+/// - Configuration cannot be loaded
+/// - Conversion fails
 fn main() {
   let args = Args::parse();
 
@@ -102,7 +147,20 @@ fn main() {
   }
 }
 
-/// Show configuration information
+/// Display comprehensive configuration information to the user.
+///
+/// Shows current configuration settings, template directory location,
+/// and configuration file search priority order.
+///
+/// # Examples
+///
+/// ```no_run
+/// show_config_info();
+/// ```
+///
+/// # Panics
+///
+/// Exits the process with code 1 if configuration cannot be loaded.
 fn show_config_info() {
   match Config::load() {
     Ok(config) => {
@@ -137,7 +195,22 @@ fn show_config_info() {
   }
 }
 
-/// Create default configuration file
+/// Create a default configuration file in the user's config directory.
+///
+/// Creates `~/.config/md-pdf/config.ron` with sensible defaults.
+/// The configuration directory will be created if it doesn't exist.
+///
+/// # Examples
+///
+/// ```no_run
+/// create_default_config();
+/// ```
+///
+/// # Panics
+///
+/// Exits the process with code 1 if:
+/// - Home directory cannot be determined
+/// - Configuration file cannot be created
 fn create_default_config() {
   // Try to create config in ~/.config/md-pdf/config.ron
   if let Some(home_dir) = dirs::home_dir() {
