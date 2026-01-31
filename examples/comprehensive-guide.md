@@ -4,7 +4,7 @@ subtitle: "A comprehensive guide"
 logo: "resources/md-pdf.svg"
 author: "tschinz"
 date: "2026-01-22"
-version: "0.0.2"
+version: "0.1.0"
 language: "en"
 toc: true
 template: "simple"
@@ -90,7 +90,7 @@ Install directly from the Git repository using cargo:
 cargo install --git https://github.com/tschinz/md-pdf
 
 # Install specific version/tag
-cargo install --git https://github.com/tschinz/md-pdf --tag v0.0.2
+cargo install --git https://github.com/tschinz/md-pdf --tag v0.1.0
 ```
 
 ### First Run & Auto-Setup

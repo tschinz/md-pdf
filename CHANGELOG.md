@@ -3,7 +3,28 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 ---
+## [0.1.0](https://github.com/tschinz/md-pdf/compare/0.0.2..0.1.0) - 2026-01-31
 
+### 🚀 Features
+
+- **(template)** add darko template - ([f99869f](https://github.com/tschinz/md-pdf/commits/f99869f38adcda9d10b9da1e5d9a5b265de0dfca)) - zas
+
+### 🐛 Bug Fixes
+
+- **(templates)** beautify and improve default templates, support for additional frontmatter fields - ([667576d](https://github.com/tschinz/md-pdf/commits/667576d6f0c06b5e94975c8a6ddc5e661af6a25e)) - zas
+- clippy issues and test config issues - ([f555bdc](https://github.com/tschinz/md-pdf/commits/f555bdcc4ee9136fb7ac3e3c4696017b9b7b17c8)) - zas
+
+### 📚 Documentation
+
+- **(example)** optimize the example with all template supported frontmatter fields - ([34dc875](https://github.com/tschinz/md-pdf/commits/34dc875d01e812c1007d6c54d458d23b4cda5a80)) - zas
+- **(guide)** add images of the default templates and minor changes - ([27939e0](https://github.com/tschinz/md-pdf/commits/27939e08be6ae9615d12550a78f421434e22ed00)) - zas
+- **(guide)** add darko template - ([5498b7c](https://github.com/tschinz/md-pdf/commits/5498b7c86a90e60362c70a49039df4d5fac1d3d1)) - zas
+
+### ⚙️ Miscellaneous Tasks
+
+- **(ci)** add github workflow for ci and release - ([a7fb41d](https://github.com/tschinz/md-pdf/commits/a7fb41d3199e1ca6960269c6805d158d17817bf5)) - zas
+
+---
 ## [0.0.2](https://github.com/tschinz/md-pdf/compare/0.0.1..0.0.2) - 2026-01-26
 
 ### 🚀 Features
@@ -19,7 +40,14 @@ All notable changes to this project will be documented in this file. See [conven
 
 ### 💼 Other
 
-- [**breaking**]prepare package for crates.io publication - ([40d0c27](https://github.com/tschinz/md-pdf/commits/40d0c279fbfde24a0a7a4dedbb6a19e48bac4dae)) - zas
+-  [**breaking**]prepare package for crates.io publication - ([40d0c27](https://github.com/tschinz/md-pdf/commits/40d0c279fbfde24a0a7a4dedbb6a19e48bac4dae)) - zas
+-  [**breaking**]prepare package for crates.io publication - ([40d0c27](https://github.com/tschinz/md-pdf/commits/40d0c279fbfde24a0a7a4dedbb6a19e48bac4dae)) - zas
+-  [**breaking**]prepare package for crates.io publication - ([40d0c27](https://github.com/tschinz/md-pdf/commits/40d0c279fbfde24a0a7a4dedbb6a19e48bac4dae)) - zas
+-  [**breaking**]prepare package for crates.io publication - ([40d0c27](https://github.com/tschinz/md-pdf/commits/40d0c279fbfde24a0a7a4dedbb6a19e48bac4dae)) - zas
+- add support for custom frontmatter fields as sys.inputs - ([7ffc1f5](https://github.com/tschinz/md-pdf/commits/7ffc1f53ebe794fbeea2bb9f6cb3f91398865372)) - zas
+- add support for custom frontmatter fields as sys.inputs - ([7ffc1f5](https://github.com/tschinz/md-pdf/commits/7ffc1f53ebe794fbeea2bb9f6cb3f91398865372)) - zas
+- add support for custom frontmatter fields as sys.inputs - ([7ffc1f5](https://github.com/tschinz/md-pdf/commits/7ffc1f53ebe794fbeea2bb9f6cb3f91398865372)) - zas
+- add support for custom frontmatter fields as sys.inputs - ([7ffc1f5](https://github.com/tschinz/md-pdf/commits/7ffc1f53ebe794fbeea2bb9f6cb3f91398865372)) - zas
 - add support for custom frontmatter fields as sys.inputs - ([7ffc1f5](https://github.com/tschinz/md-pdf/commits/7ffc1f53ebe794fbeea2bb9f6cb3f91398865372)) - zas
 - Custom frontmatter fields not available in templates - ([7ffc1f5](https://github.com/tschinz/md-pdf/commits/7ffc1f53ebe794fbeea2bb9f6cb3f91398865372)) - zas
 
@@ -30,10 +58,10 @@ All notable changes to this project will be documented in this file. See [conven
 ### ⚙️ Miscellaneous Tasks
 
 - **(guide)** cleanup - ([a0b1da9](https://github.com/tschinz/md-pdf/commits/a0b1da91fbc006520626702f53f18818cbe73a4a)) - zas
+- **(version)** prepare for 0.0.2 prerelease - ([bf9de31](https://github.com/tschinz/md-pdf/commits/bf9de31916d20b9d6379726833c7235dbf93becf)) - zas
 - prepare package for crates.io publication - ([40d0c27](https://github.com/tschinz/md-pdf/commits/40d0c279fbfde24a0a7a4dedbb6a19e48bac4dae)) - zas
 
 ---
-
 ## [0.0.1] - 2026-01-23
 
 ### 🚀 Features

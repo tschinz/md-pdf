@@ -1,14 +1,17 @@
 [package]
 name = "md-pdf"
-version = "0.0.2"
-edition = "2021"
+version = "0.1.0"
+edition = "2024"
 authors = ["tschinz"]
 license = "MIT"
 description = "Convert markdown files to PDF using typst with templating"
 readme = "README.md"
 repository = "https://github.com/tschinz/md-pdf"
-categories = ["command-line-utilities"]
+categories = ["command-line-utilities", "multimedia", "template-engine"]
 keywords = ["markdown", "pdf", "typst", "converter", "templating"]
+exclude = [
+  ".github"
+]
 
 [dependencies]
 clap = { version = "4.5.51", features = ["derive"] }

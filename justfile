@@ -3,13 +3,14 @@
 #
 
 rust_env := "rustup show"
-rust_edition := "2021"
+rust_edition := "2024"
 open := if os() == "linux" { "xdg-open" } else if os() == "macos" { "open" } else { "start \"\" /max" }
 app_name := "md-pdf"
+crate_name := "md_pdf"
 args := ""
 project_directory := justfile_directory()
 release := `git describe --tags --always`
-version := "0.0.2"
+version := "0.1.0"
 url := "https://github.com/tschinz/md-pdf"
 
 ##################################################

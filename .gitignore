@@ -1,2 +1,5 @@
 /target
 .cargo
+**/*.rs.bk
+*.pdb
+.DS_Store
