@@ -127,35 +127,21 @@ jobs:
 
       - name: Generate SBOM
         run: |
-          cargo sbom --output-format cyclone_dx_json_1_6 > sbom.json
+          cargo sbom --output-format cyclone_dx_json_1_6 > sbom-cyclone_dx_1_6.json
 
-      - name: Add project metadata to SBOM
+      - name: Upload SBOM to Dependency Track
         run: |
-          # Extract version without 'v' prefix
-          VERSION=$(echo "${{ needs.prepare.outputs.release_version }}" | sed 's/^v//')
-
-          # Create enhanced SBOM with additional metadata
-          cat > enhanced_sbom.json << EOF
-          {
-            "projectName": "md-pdf",
-            "projectVersion": "$VERSION",
-            "tags": ["rust", "cli"],
-            "sbom": $(cat sbom.json)
-          }
-          EOF
-
-      - name: Push SBOM to endpoint
-        run: |
-          curl -X POST \
-            -H "Content-Type: application/json" \
-            -d @enhanced_sbom.json \
-            https://dt.zahno.dev/sbom
+          curl -X POST "${{ secrets.DT_BASE_URL }}/api/v1/bom" \
+            -H "X-Api-Key: ${{ secrets.DT_API_KEY }}" \
+            -H "Content-Type: multipart/form-data" \
+            -F "project=${{ secrets.DT_PROJECT_UUID }}" \
+            -F "bom=@sbom-cyclone_dx_1_6.json"
 
       - name: Upload SBOM artifact
         uses: actions/upload-artifact@v4
         with:
           name: sbom
-          path: enhanced_sbom.json
+          path: sbom-cyclone_dx_1_6.json
 
   release:
     needs: [prepare, build, sbom]
