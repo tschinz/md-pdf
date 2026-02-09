@@ -43,6 +43,9 @@ pub struct Args {
   /// Show configuration file locations and settings.
   #[arg(long)]
   pub show_config: bool,
+  /// Open the generated PDF file after creation.
+  #[arg(long)]
+  pub open: bool,
 }
 
 impl Args {
@@ -126,5 +129,10 @@ impl Args {
   /// Check if link checking was requested.
   pub fn should_check_links(&self) -> bool {
     self.check_links
+  }
+
+  /// Check if opening the PDF file was requested.
+  pub fn should_open(&self) -> bool {
+    self.open
   }
 }

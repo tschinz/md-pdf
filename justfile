@@ -67,19 +67,15 @@ run args=args:
 watch file="" args=args:
     # Convert .md to .pdf for opening
     pdf_file=$(echo "{{ file }}" | sed 's/\.md$/.pdf/')
-    cargo run -- "{{ file }}" {{ args }}
-    {{ open }} "$pdf_file"
-    cargo run -- --watch "{{ file }}" {{ args }}
+    cargo run -- -w --open  "{{ file }}" {{ args }}
 
 # Watch the guide with live preview
 watch-guide args=args:
-    cargo run -- examples/comprehensive-guide.md -o examples/comprehensive-guide.pdf {{ args }}
-    {{ open }} examples/comprehensive-guide.pdf
-    cargo run -- -w examples/comprehensive-guide.md -o examples/comprehensive-guide.pdf {{ args }}
+    cargo run -- -w --open examples/comprehensive-guide.md -o examples/comprehensive-guide.pdf -t professional {{ args }}
 
 # Watch the guide with live preview
 pdf-guide args=args:
-    cargo run -- examples/comprehensive-guide.md -o examples/comprehensive-guide.pdf {{ args }}
+    cargo run -- examples/comprehensive-guide.md -o examples/comprehensive-guide.pdf -t professional {{ args }}
     {{ open }} examples/comprehensive-guide.pdf
 
 # Generate guide PDFs from all example documents using both available templates

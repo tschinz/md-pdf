@@ -33,7 +33,7 @@ mod link_checker;
 
 use args::Args;
 use config::Config;
-use convert::{convert_to_pdf, list_available_templates, watch_file};
+use convert::{convert_to_pdf, list_available_templates, open_file, watch_file};
 use link_checker::check_links_in_file;
 use std::path::Path;
 use std::process;
@@ -120,7 +120,7 @@ fn main() {
 
   // Check if watch mode is enabled
   if args.should_watch() {
-    match watch_file(input_path, &output_path, args.get_template()) {
+    match watch_file(input_path, &output_path, args.get_template(), args.should_open()) {
       Ok(_) => {
         println!("Watch mode stopped.");
       }
@@ -138,6 +138,14 @@ fn main() {
     match convert_to_pdf(input_path, &output_path, args.get_template()) {
       Ok(_) => {
         println!("Done.");
+
+        // Open the file if requested
+        if args.should_open() {
+          match open_file(Path::new(&output_path)) {
+            Ok(_) => println!("📂 Opened '{}' with default application", output_path),
+            Err(e) => eprintln!("⚠️  Could not open file '{}': {}", output_path, e),
+          }
+        }
       }
       Err(e) => {
         eprintln!("Conversion failed: {e}");

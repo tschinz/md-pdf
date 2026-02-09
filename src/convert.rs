@@ -190,6 +190,38 @@ pub fn convert_to_pdf(md_file: &Path, output: &str, template_option: Option<&Str
   }
 }
 
+/// Open a file with the system's default application.
+///
+/// This function provides cross-platform file opening functionality.
+/// On Windows, it uses the default associated application.
+/// On macOS, it uses the `open` command.
+/// On Linux, it uses `xdg-open`.
+///
+/// # Arguments
+///
+/// * `file_path` - Path to the file to open
+///
+/// # Examples
+///
+/// ```no_run
+/// use std::path::Path;
+/// use md_pdf::convert::open_file;
+///
+/// open_file(Path::new("document.pdf"))?;
+/// # Ok::<(), Box<dyn std::error::Error>>(())
+/// ```
+///
+/// # Errors
+///
+/// Returns an error if:
+/// - The file doesn't exist
+/// - The system cannot determine the default application
+/// - The default application fails to launch
+pub fn open_file(file_path: &Path) -> Result<(), Box<dyn std::error::Error>> {
+  opener::open(file_path)?;
+  Ok(())
+}
+
 /// Watch a file for changes and rebuild automatically for live preview.
 ///
 /// This function provides continuous monitoring of the specified markdown file
@@ -200,6 +232,7 @@ pub fn convert_to_pdf(md_file: &Path, output: &str, template_option: Option<&Str
 /// * `md_file` - Path to the markdown file to monitor for changes
 /// * `output` - Output path for the generated PDF file
 /// * `template_option` - Optional template name to use for conversion
+/// * `should_open` - Whether to open the PDF file after each conversion
 ///
 /// # Examples
 ///
@@ -208,11 +241,11 @@ pub fn convert_to_pdf(md_file: &Path, output: &str, template_option: Option<&Str
 /// use md_pdf::convert::watch_file;
 ///
 /// // Watch a file with default template
-/// watch_file(Path::new("document.md"), "output.pdf", None)?;
+/// watch_file(Path::new("document.md"), "output.pdf", None, false)?;
 ///
-/// // Watch with specific template
+/// // Watch with specific template and auto-open
 /// let template = Some(&"simple".to_string());
-/// watch_file(Path::new("document.md"), "output.pdf", template)?;
+/// watch_file(Path::new("document.md"), "output.pdf", template, true)?;
 /// # Ok::<(), Box<dyn std::error::Error>>(())
 /// ```
 ///
@@ -223,13 +256,21 @@ pub fn convert_to_pdf(md_file: &Path, output: &str, template_option: Option<&Str
 /// - File system watching cannot be initialized
 /// - The file path cannot be canonicalized
 /// - Initial PDF conversion fails
-pub fn watch_file(md_file: &Path, output: &str, template_option: Option<&String>) -> Result<(), Box<dyn std::error::Error>> {
+pub fn watch_file(md_file: &Path, output: &str, template_option: Option<&String>, should_open: bool) -> Result<(), Box<dyn std::error::Error>> {
   let md_file_absolute = md_file.canonicalize()?;
   println!("👀 Watching '{}' for changes...", md_file_absolute.display());
   println!("Press Ctrl+C to stop watching");
 
   // Initial conversion
   convert_to_pdf(md_file, output, template_option)?;
+
+  // Open the file if requested
+  if should_open {
+    match open_file(Path::new(output)) {
+      Ok(_) => println!("📂 Opened '{}' with default application", output),
+      Err(e) => eprintln!("⚠️  Could not open file '{}': {}", output, e),
+    }
+  }
 
   let (tx, rx) = channel();
   let mut watcher = RecommendedWatcher::new(tx, NotifyConfig::default())?;
@@ -246,7 +287,16 @@ pub fn watch_file(md_file: &Path, output: &str, template_option: Option<&String>
             if event.kind.is_modify() {
               println!("\n🔄 File changed, rebuilding...");
               match convert_to_pdf(md_file, output, template_option) {
-                Ok(_) => println!("✅ Rebuild complete"),
+                Ok(_) => {
+                  println!("✅ Rebuild complete");
+                  // Open the file if requested
+                  if should_open {
+                    match open_file(Path::new(output)) {
+                      Ok(_) => println!("📂 Opened '{}' with default application", output),
+                      Err(e) => eprintln!("⚠️  Could not open file '{}': {}", output, e),
+                    }
+                  }
+                }
                 Err(e) => eprintln!("❌ Rebuild failed: {e}"),
               }
               println!("👀 Watching for changes...");

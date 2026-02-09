@@ -12,6 +12,7 @@ A fast, lightweight command-line tool that converts Markdown files to profession
 - 🎨 **Professional output** with built-in templates
 - ⚙️ **Zero configuration** - works out of the box
 - 👀 **Watch mode** for live preview
+- 📂 **Auto-open** generated PDFs
 - 🔗 **Link validation** checks external URLs
 - 📝 **Rich metadata** support via YAML front matter
 
@@ -54,8 +55,14 @@ cd md-pdf && cargo install --path .
 # Convert markdown to PDF
 md-pdf document.md
 
+# Convert and open PDF automatically
+md-pdf document.md --open
+
 # Watch for changes (live preview)
 md-pdf --watch document.md
+
+# Watch for changes and open PDF after each rebuild
+md-pdf --watch document.md --open
 
 # Check links before conversion
 md-pdf --check-links document.md
@@ -86,6 +93,7 @@ Options:
       --list-templates       List all available templates
       --create-config        Create default configuration file
       --show-config          Show configuration file locations and settings
+      --open                 Open the generated PDF file after creation
   -h, --help                 Print help
   -V, --version              Print version
 ```

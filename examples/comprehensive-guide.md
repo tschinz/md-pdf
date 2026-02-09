@@ -9,13 +9,13 @@ language: "en"
 toc: true
 template: "simple"
 tags:
-  - user-guide
-  - documentation
-  - md-pdf
-  - markdown to pdf
-  - typst
-  - configuration
-  - templates
+    - user-guide
+    - documentation
+    - md-pdf
+    - markdown to pdf
+    - typst
+    - configuration
+    - templates
 ---
 
 # Overview
@@ -33,6 +33,7 @@ md-pdf bridges the gap between Markdown's simplicity and PDF's professional pres
 - ⚙️ **Zero Configuration**: Works out of the box with intelligent defaults
 - 🔧 **Highly Customizable**: Flexible template system and configuration options
 - 👀 **Live Preview**: Real-time PDF updates with watch mode
+- 📂 **Auto-Open**: Cross-platform PDF viewing with system default applications
 - 🔗 **Link Validation**: Built-in checking for external links to ensure document quality
 - 📝 **Rich Metadata**: Comprehensive front matter support
 
@@ -100,6 +101,9 @@ After installation, md-pdf is ready to use immediately:
 ```bash
 # Convert your first document (triggers auto-setup)
 md-pdf README.md
+
+# Convert and open PDF automatically
+md-pdf README.md --open
 
 # Check what was automatically created
 md-pdf --show-config
@@ -340,8 +344,8 @@ review_date: "2024-02-01"
 budget: 50000
 approved: true
 reviewers:
-  - "Alice Johnson"
-  - "Bob Smith"
+    - "Alice Johnson"
+    - "Bob Smith"
 ---
 ```
 
@@ -448,8 +452,8 @@ title: "My Document"
 author: "John Doe"
 date: "2024-01-22"
 tags:
-  - tag1
-  - tag2
+    - tag1
+    - tag2
 ---
 # Document content starts here...
 ```
@@ -467,16 +471,16 @@ description: "Single quoted string"
 
 # Multi-line strings (preserve line breaks)
 abstract: |
-  This is a multi-line string
-  that preserves line breaks.
-  Perfect for abstracts, descriptions,
-  or detailed explanations.
+    This is a multi-line string
+    that preserves line breaks.
+    Perfect for abstracts, descriptions,
+    or detailed explanations.
 
 # Folded strings (join lines with spaces)
 summary: >
-  This is a folded string that joins
-  multiple lines with spaces, creating
-  a single paragraph of text.
+    This is a folded string that joins
+    multiple lines with spaces, creating
+    a single paragraph of text.
 
 # Escaped strings
 special_chars: "Quotes: \"Hello\", Backslash: \\"
@@ -516,19 +520,19 @@ languages: ["en", "es", "fr"]
 
 # Multi-line arrays
 keywords:
-  - technical writing
-  - automation tools
-  - document processing
-  - workflow optimization
+    - technical writing
+    - automation tools
+    - document processing
+    - workflow optimization
 
 # Mixed type arrays
 scores: [95, 87.5, "excellent", true]
 
 # Nested arrays
 matrix:
-  - [1, 2, 3]
-  - [4, 5, 6]
-  - [7, 8, 9]
+    - [1, 2, 3]
+    - [4, 5, 6]
+    - [7, 8, 9]
 ```
 
 ### Objects/Dictionaries
@@ -536,22 +540,22 @@ matrix:
 ```yaml
 # Simple objects
 contact:
-  name: "John Doe"
-  email: "john@example.com"
-  phone: "+1-555-0123"
+    name: "John Doe"
+    email: "john@example.com"
+    phone: "+1-555-0123"
 
 # Nested objects
 project_info:
-  name: "Documentation Project"
-  timeline:
-    start: "2024-01-01"
-    end: "2024-06-30"
-  budget:
-    allocated: 100000
-    spent: 75000
-  team:
-    lead: "Jane Smith"
-    members: ["Alice", "Bob", "Charlie"]
+    name: "Documentation Project"
+    timeline:
+        start: "2024-01-01"
+        end: "2024-06-30"
+    budget:
+        allocated: 100000
+        spent: 75000
+    team:
+        lead: "Jane Smith"
+        members: ["Alice", "Bob", "Charlie"]
 ```
 
 ### Dates and Times
@@ -590,17 +594,17 @@ toc: true
 language: "en"
 tags: ["machine learning", "document processing", "natural language processing", "computer vision", "automation"]
 abstract: |
-  This paper presents a comprehensive survey of machine learning
-  techniques applied to automated document processing tasks,
-  including natural language processing, computer vision, and
-  hybrid approaches. We analyze current methodologies, identify
-  key challenges, and propose future research directions.
+    This paper presents a comprehensive survey of machine learning
+    techniques applied to automated document processing tasks,
+    including natural language processing, computer vision, and
+    hybrid approaches. We analyze current methodologies, identify
+    key challenges, and propose future research directions.
 keywords:
-  - machine learning
-  - document processing
-  - natural language processing
-  - computer vision
-  - automation
+    - machine learning
+    - document processing
+    - natural language processing
+    - computer vision
+    - automation
 ---
 ```
 
@@ -627,6 +631,7 @@ Options:
       --list-templates       List all available templates
       --create-config        Create default configuration file
       --show-config          Show configuration file locations and settings
+      --open                 Open the generated PDF file after creation
   -h, --help                 Print help
   -V, --version              Print version
 ```
@@ -637,20 +642,29 @@ Options:
 # Convert with all defaults (uses config settings)
 md-pdf document.md
 
+# Convert and open PDF automatically
+md-pdf document.md --open
+
 # Specify output filename
 md-pdf document.md -o report.pdf
 
 # Use specific template (overrides config default)
 md-pdf document.md -t simple -o formatted-report.pdf
 
+# Convert with template and auto-open
+md-pdf document.md -t simple --open
+
 # Watch file for changes (live preview mode)
 md-pdf --watch document.md
+
+# Watch and auto-open after each rebuild
+md-pdf --watch document.md --open
 
 # Watch with custom output and template
 md-pdf --watch document.md -t simple -o live-preview.pdf
 
-# Watch with custom output and template and check all links
-md-pdf --check-links --watch document.md -t simple -o live-preview.pdf
+# Watch with custom output, custom template, auto-open, and link checking
+md-pdf --check-links --watch document.md -t simple --open -o live-preview.pdf
 ```
 
 ### Information and Configuration Commands
