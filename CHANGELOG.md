@@ -3,10 +3,11 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 ---
-## [0.1.0](https://github.com/tschinz/md-pdf/compare/0.0.2..0.1.0) - 2026-02-08
+## [0.1.0](https://github.com/tschinz/md-pdf/compare/0.0.2..0.1.0) - 2026-02-09
 
 ### 🚀 Features
 
+- **(open)** add auto-open feature flag - ([e6e9b57](https://github.com/tschinz/md-pdf/commits/e6e9b57dee125bb398a8e4225e11d596a86fd3da)) - zas
 - **(sbom)** add sbom in justfile and release workflow - ([3e347d6](https://github.com/tschinz/md-pdf/commits/3e347d64225e0410ad9ba4ae45b3d83e374d5f99)) - zas
 - **(template)** add darko template - ([f99869f](https://github.com/tschinz/md-pdf/commits/f99869f38adcda9d10b9da1e5d9a5b265de0dfca)) - zas
 
@@ -27,6 +28,7 @@ All notable changes to this project will be documented in this file. See [conven
 - **(ci)** add github workflow for ci and release - ([a7fb41d](https://github.com/tschinz/md-pdf/commits/a7fb41d3199e1ca6960269c6805d158d17817bf5)) - zas
 - **(creates)** upgrades all crates - ([5df47f0](https://github.com/tschinz/md-pdf/commits/5df47f006dc339a070f27b92c1517e5ecc910d72)) - zas
 - **(release)** add trivy test and sbom upload - ([a5bb0fa](https://github.com/tschinz/md-pdf/commits/a5bb0fa4edaca7b1ea0dae4a3baee32e3b228efb)) - zas
+- **(release)** update changelog for 0.1.0 - ([0cb542a](https://github.com/tschinz/md-pdf/commits/0cb542a4614359ee4ba12d47621c16fd0774d6ba)) - zas
 - bump rust edition add and smaller fixes, prepare for 0.1.0 release - ([4fb21a2](https://github.com/tschinz/md-pdf/commits/4fb21a297d35f77df316553bc0265324e199a459)) - zas
 
 ---
