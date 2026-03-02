@@ -1,3 +1,7 @@
+![GitHub Repo stars](https://img.shields.io/github/stars/tschinz/md-pdf)
+![GitHub Release](https://img.shields.io/github/v/release/tschinz/md-pdf)
+![](https://tianji.zahno.dev/telemetry/clnzoxcy10001vy2ohi4obbi0/cmm9n0cbu0800kba1ozor679f.gif)
+
 <div align="center">
   <img src="img/md-pdf.svg" alt="md-pdf logo" width="150">
 </div>
