@@ -87,6 +87,7 @@ pdf-examples:
     cargo run -- -t playful -o examples/starfleet-playful.pdf examples/starfleet.md
     cargo run -- -t brutalist -o examples/starfleet-brutalist.pdf examples/starfleet.md
     cargo run -- -t darko -o examples/starfleet-darko.pdf examples/starfleet.md
+    cargo run -- -t none -o examples/raw-md.pdf examples/raw-md.md
     echo "✓ Created all PDFs from examples"
     echo "Files generated:"
     echo "  - examples/starfleet-none.pdf"
