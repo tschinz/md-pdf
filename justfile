@@ -12,6 +12,7 @@ project_directory := justfile_directory()
 release := `git describe --tags --always`
 version := "0.1.0"
 url := "https://github.com/tschinz/md-pdf"
+file := "examples/comprehensive-guide.md"
 
 ##################################################
 # COMMANDS
@@ -64,7 +65,7 @@ run args=args:
     cargo run -- {{ args }}
 
 # Watch a markdown file for changes and rebuild automatically
-watch file="" args=args:
+watch file=file args=args:
     # Convert .md to .pdf for opening
     pdf_file=$(echo "{{ file }}" | sed 's/\.md$/.pdf/')
     cargo run -- -w --open  "{{ file }}" {{ args }}
