@@ -100,13 +100,12 @@ impl Config {
       // Create the default config file
       match Self::create_default_config(&default_config_path) {
         Ok(_) => {
-          println!(
-            "No configuration file found, created default at: {}",
-            default_config_path
-              .canonicalize()
-              .unwrap_or_else(|_| default_config_path.to_path_buf())
-              .display()
-          );
+          let config_display = default_config_path
+            .canonicalize()
+            .unwrap_or_else(|_| default_config_path.to_path_buf());
+          println!("No configuration file found, created default at: {}", config_display.display());
+          let templates_display = config_display.parent().unwrap_or(&config_display).join("templates");
+          println!("Default templates created at: {}", templates_display.display());
           // Load the newly created config
           let content = fs::read_to_string(&default_config_path)?;
           let config: Config = ron::from_str(&content)?;
@@ -367,14 +366,40 @@ impl Config {
       fs::create_dir_all(parent)?;
     }
 
-    // Create default config
-    let default_config = Config::default();
+    // Resolve templates directory relative to the config file location
+    let templates_dir = path.parent().map(|p| p.join("templates"));
+
+    // Create default config with templates_dir set
+    let default_config = Config {
+      templates_dir: templates_dir.clone(),
+      ..Config::default()
+    };
 
     // Serialize to RON format
     let config_content = ron::ser::to_string_pretty(&default_config, ron::ser::PrettyConfig::default())?;
 
     // Write to file
     fs::write(path, config_content)?;
+
+    // Create templates directory and write default template files
+    if let Some(dir) = templates_dir {
+      fs::create_dir_all(&dir)?;
+
+      let builtin_templates = [
+        ("none", Self::get_fallback_none_template()),
+        ("simple", Self::get_fallback_simple_template()),
+        ("playful", Self::get_fallback_playful_template()),
+        ("brutalist", Self::get_fallback_brutalist_template()),
+        ("darko", Self::get_fallback_darko_template()),
+      ];
+
+      for (name, content) in builtin_templates {
+        let template_path = dir.join(format!("{name}.typ"));
+        if !template_path.exists() {
+          fs::write(template_path, content)?;
+        }
+      }
+    }
 
     Ok(())
   }
