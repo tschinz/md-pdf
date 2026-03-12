@@ -51,6 +51,9 @@ cargo install --git https://github.com/tschinz/md-pdf
 # Or build locally
 git clone https://github.com/tschinz/md-pdf
 cd md-pdf && cargo install --path .
+
+# from crates.io
+cargo install md-pdf
 ```
 
 ## Quick Start
