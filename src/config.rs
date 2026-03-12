@@ -100,9 +100,7 @@ impl Config {
       // Create the default config file
       match Self::create_default_config(&default_config_path) {
         Ok(_) => {
-          let config_display = default_config_path
-            .canonicalize()
-            .unwrap_or_else(|_| default_config_path.to_path_buf());
+          let config_display = default_config_path.canonicalize().unwrap_or_else(|_| default_config_path.to_path_buf());
           println!("No configuration file found, created default at: {}", config_display.display());
           let templates_display = config_display.parent().unwrap_or(&config_display).join("templates");
           println!("Default templates created at: {}", templates_display.display());
