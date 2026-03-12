@@ -1,5 +1,38 @@
 # Changelog
 
+All notable changes to this project will be documented in this file.
+
+## [0.1.1] - 2026-03-12
+
+### 🐛 Bug Fixes
+
+- *(templates)* Create default config and templates if none exist ([08ca2b0](https://github.com/tschinz/md-pdf/commit/08ca2b054be87536a2f755e66744600a9c877abc) - zas)
+- *(fmt)* Run rust fmt ([a4ebc60](https://github.com/tschinz/md-pdf/commit/a4ebc6058ac1c08696a921d5036028e3faafefac) - zas)
+
+### 📚 Documentation
+
+- *(readme)* Add install option crates.io ([5539049](https://github.com/tschinz/md-pdf/commit/5539049e0d082a221fab60b273d0bb8ef8f08c7f) - zas)
+
+### 🧪 Testing
+
+- *(raw-md)* Add new testfile raw-md ([5651405](https://github.com/tschinz/md-pdf/commit/5651405a141712e0a7ec8322ecb96753e61eb1c1) - zas)
+
+### ⚙️ Miscellaneous Tasks
+
+- *(readme)* Extend readme with badge and tianji tracker ([7e198a3](https://github.com/tschinz/md-pdf/commit/7e198a3396f280ef64f9e293ea3c71efd950f214) - tschinz)
+- *(cliff)* Change cliff config ([ee1273b](https://github.com/tschinz/md-pdf/commit/ee1273b9b3e040c3998ad4c86c8d5b804ff3721d) - zas)
+- *(just)* Add default value for watch recipe ([89eeee8](https://github.com/tschinz/md-pdf/commit/89eeee82780b9e0d0e1508b8bd4a78dbabd6e03a) - zas)
+- *(just)* Add publish-check recpie ([bfb4b68](https://github.com/tschinz/md-pdf/commit/bfb4b687f64dbec757e07d6c8b0d31b364129c51) - zas)
+
+### ◀️ Revert
+
+- Remove example file ([0248127](https://github.com/tschinz/md-pdf/commit/0248127f775f250bc83b7f09e7dc13635201f771) - zas)
+
+
+**Full Changelog**: [v0.1.0...0.1.1](https://github.com/tschinz/md-pdf/compare/v0.1.0...0.1.1)
+
+# Changelog
+
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 ---

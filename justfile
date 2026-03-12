@@ -10,7 +10,7 @@ crate_name := "md_pdf"
 args := ""
 project_directory := justfile_directory()
 release := `git describe --tags --always`
-version := "0.1.0"
+version := "0.1.1"
 url := "https://github.com/tschinz/md-pdf"
 file := "examples/comprehensive-guide.md"
 
@@ -58,7 +58,7 @@ build:
 
 # create a release version of the program
 changelog version=version:
-    git cliff --tag {{ version }}
+  git cliff --unreleased --tag {{version}} --prepend CHANGELOG.md
 
 # Run the program in debug mode
 run args=args:
