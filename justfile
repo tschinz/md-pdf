@@ -171,6 +171,28 @@ sbom-upload:
 trivy:
     trivy fs --scanners vuln,secret,misconfig --format table .
 
+# Check steps for publishing is_lib ["true"|"false"]
+publish-check is_lib="false":
+  #!/usr/bin/env bash
+  echo "Run all tests"
+  cargo test
+  echo "Run clippy"
+  cargo clippy
+  echo "Format code"
+  cargo fmt --all
+  echo "Build documentation"
+  cargo doc --open
+  echo "Test documentation examples"
+  if [ "{{is_lib}}" = "true" ]; then
+    cargo test --doc
+  fi
+  echo "Run benchmarks (if available)"
+  cargo bench
+  echo "Run security audit"
+  cargo audit
+  echo "Test Publishing"
+  cargo publish --dry-run
+
 # Show help for the compiled binary
 help:
     cargo run -- --help
