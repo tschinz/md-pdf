@@ -87,7 +87,11 @@ pdf-examples:
     cargo run -- -t playful -o examples/starfleet-playful.pdf examples/starfleet.md
     cargo run -- -t brutalist -o examples/starfleet-brutalist.pdf examples/starfleet.md
     cargo run -- -t darko -o examples/starfleet-darko.pdf examples/starfleet.md
-    cargo run -- -t none -o examples/raw-md.pdf examples/raw-md.md
+    cargo run -- -t none -o examples/raw-md-none.pdf examples/raw-md.md
+    cargo run -- -t simple -o examples/raw-md-simple.pdf examples/raw-md.md
+    cargo run -- -t playful -o examples/raw-md-playful.pdf examples/raw-md.md
+    cargo run -- -t brutalist -o examples/raw-md-brutalist.pdf examples/raw-md.md
+    cargo run -- -t darko -o examples/raw-md-darko.pdf examples/raw-md.md
     echo "✓ Created all PDFs from examples"
     echo "Files generated:"
     echo "  - examples/starfleet-none.pdf"
@@ -100,6 +104,11 @@ pdf-examples:
     {{ open }} examples/starfleet-playful.pdf
     {{ open }} examples/starfleet-brutalist.pdf
     {{ open }} examples/starfleet-darko.pdf
+    {{ open }} examples/raw-md-none.pdf
+    {{ open }} examples/raw-md-simple.pdf
+    {{ open }} examples/raw-md-playful.pdf
+    {{ open }} examples/raw-md-brutalist.pdf
+    {{ open }} examples/raw-md-darko.pdf
 
 # Run tests
 test:
