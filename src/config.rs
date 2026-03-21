@@ -55,7 +55,7 @@ impl Default for Config {
       default_template: Some("simple".to_string()),
       default_language: Some("en".to_string()),
       default_toc: Some(true),
-      default_author: Some("ZaS".to_string()),
+      default_author: Some("md-pdf".to_string()),
     }
   }
 }
