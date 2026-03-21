@@ -94,13 +94,14 @@ Arguments:
 
 Options:
   -o, --output <OUTPUT>      Path to the output PDF file
-  -t, --template <TEMPLATE>  list the templates and select the one you want [default: none]
+  -t, --template <TEMPLATE>  Template to use for PDF generation [default: none]
   -w, --watch                Watch the input file for changes and rebuild automatically
       --check-links          Check all links in the markdown file and display warnings for unreachable links
       --list-templates       List all available templates
       --create-config        Create default configuration file
       --show-config          Show configuration file locations and settings
       --open                 Open the generated PDF file after creation
+      --refresh-templates    Refresh templates in the config directory with the latest embedded versions
   -h, --help                 Print help
   -V, --version              Print version
 ```

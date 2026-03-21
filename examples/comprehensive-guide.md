@@ -3,8 +3,8 @@ title: "md-pdf"
 subtitle: "A comprehensive guide"
 logo: "resources/md-pdf.svg"
 author: "tschinz"
-date: "2026-01-22"
-version: "v0.1.1"
+date: "2026-03-21"
+version: "v0.1.2"
 language: "en"
 toc: true
 template: "simple"
@@ -616,7 +616,7 @@ md-pdf provides a clean, intuitive command-line interface designed for efficienc
 
 ```bash
 > md-pdf -h
-Convert markdown files to PDF using typst
+Convert markdown files to PDF using typst with templating
 
 Usage: md-pdf [OPTIONS] [INPUT]
 
@@ -625,13 +625,14 @@ Arguments:
 
 Options:
   -o, --output <OUTPUT>      Path to the output PDF file
-  -t, --template <TEMPLATE>  list the templates and select the one you want [default: none]
+  -t, --template <TEMPLATE>  Template to use for PDF generation [default: none]
   -w, --watch                Watch the input file for changes and rebuild automatically
       --check-links          Check all links in the markdown file and display warnings for unreachable links
       --list-templates       List all available templates
       --create-config        Create default configuration file
       --show-config          Show configuration file locations and settings
       --open                 Open the generated PDF file after creation
+      --refresh-templates    Refresh templates in the config directory with the latest embedded versions
   -h, --help                 Print help
   -V, --version              Print version
 ```
