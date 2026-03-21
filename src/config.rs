@@ -9,6 +9,11 @@ use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
 
+// Include the auto-generated embedded templates module
+mod embedded_templates {
+  include!(concat!(env!("OUT_DIR"), "/embedded_templates.rs"));
+}
+
 /// Type alias for template information: (name, description, is_default)
 pub type TemplateInfo = Vec<(String, String, bool)>;
 
@@ -242,12 +247,11 @@ impl Config {
       }
     }
 
-    // Add built-in templates if not found in directory
-    if !templates.contains(&"none".to_string()) {
-      templates.push("none".to_string());
-    }
-    if !templates.contains(&"simple".to_string()) {
-      templates.push("simple".to_string());
+    // Add all embedded templates if not already found in directory
+    for embedded_name in embedded_templates::EMBEDDED_TEMPLATE_NAMES {
+      if !templates.contains(&embedded_name.to_string()) {
+        templates.push(embedded_name.to_string());
+      }
     }
 
     // Sort with default template first
@@ -332,15 +336,12 @@ impl Config {
       return Ok(fs::read_to_string(&template_file)?);
     }
 
-    // Fallback to built-in templates
-    match template_name {
-      "none" => Ok(Self::get_fallback_none_template()),
-      "simple" => Ok(Self::get_fallback_simple_template()),
-      "playful" => Ok(Self::get_fallback_playful_template()),
-      "brutalist" => Ok(Self::get_fallback_brutalist_template()),
-      "darko" => Ok(Self::get_fallback_darko_template()),
-      _ => Err(format!("Template '{template_name}' not found").into()),
+    // Fallback to embedded templates
+    if let Some(content) = embedded_templates::get_embedded_template(template_name) {
+      return Ok(content.to_string());
     }
+
+    Err(format!("Template '{template_name}' not found").into())
   }
 
   /// Create a default configuration file at the specified path.
@@ -383,18 +384,13 @@ impl Config {
     if let Some(dir) = templates_dir {
       fs::create_dir_all(&dir)?;
 
-      let builtin_templates = [
-        ("none", Self::get_fallback_none_template()),
-        ("simple", Self::get_fallback_simple_template()),
-        ("playful", Self::get_fallback_playful_template()),
-        ("brutalist", Self::get_fallback_brutalist_template()),
-        ("darko", Self::get_fallback_darko_template()),
-      ];
-
-      for (name, content) in builtin_templates {
-        let template_path = dir.join(format!("{name}.typ"));
-        if !template_path.exists() {
-          fs::write(template_path, content)?;
+      // Use embedded templates from the build script
+      for name in embedded_templates::EMBEDDED_TEMPLATE_NAMES {
+        if let Some(content) = embedded_templates::get_embedded_template(name) {
+          let template_path = dir.join(format!("{name}.typ"));
+          if !template_path.exists() {
+            fs::write(&template_path, content)?;
+          }
         }
       }
     }
@@ -402,161 +398,36 @@ impl Config {
     Ok(())
   }
 
-  /// Get the fallback "none" template content.
-  fn get_fallback_none_template() -> String {
-    concat!(
-      "#set page(paper: \"a4\", margin: (top: 1.5cm, bottom: 1.5cm, left: 2cm, right: 2cm))\n",
-      "#set text(font: \"Times New Roman\", size: 11pt)\n",
-      "#set par(justify: true, leading: 0.55em)\n",
-      "#set heading(numbering: \"1.\")\n\n",
-      "#show raw.where(block: true): block.with(\n",
-      "  fill: luma(240),\n",
-      "  inset: 8pt,\n",
-      "  radius: 4pt,\n",
-      "  width: 100%\n",
-      ")\n\n",
-      "#show link: underline\n\n",
-      "#include filepath\n"
-    )
-    .to_string()
-  }
+  /// Refresh templates in the config directory with the latest embedded versions.
+  ///
+  /// This will overwrite any existing templates with the same names as the embedded templates.
+  /// Custom templates with different names will be preserved.
+  ///
+  /// # Arguments
+  ///
+  /// * `templates_dir` - The directory where templates should be written
+  ///
+  /// # Returns
+  ///
+  /// A vector of template names that were refreshed.
+  ///
+  /// # Errors
+  ///
+  /// Returns an error if the directory cannot be created or templates cannot be written.
+  pub fn refresh_templates(templates_dir: &Path) -> Result<Vec<String>, Box<dyn std::error::Error>> {
+    fs::create_dir_all(templates_dir)?;
 
-  /// Get the fallback "simple" template content.
-  fn get_fallback_simple_template() -> String {
-    concat!(
-      "#set page(paper: \"a4\", margin: (top: 2.5cm, bottom: 2.5cm, left: 2cm, right: 2cm))\n",
-      "#set text(font: \"Times New Roman\", size: 11pt)\n",
-      "#set par(justify: true, leading: 0.55em)\n",
-      "#set heading(numbering: \"1.\")\n\n",
-      "// Header and footer\n",
-      "#set page(\n",
-      "  header: locate(loc => {\n",
-      "    let headings = query(heading.where(level: 1), loc)\n",
-      "    if headings.len() > 0 {\n",
-      "      align(right)[#text(size: 9pt, style: \"italic\")[Chapter #headings.last().numbering]]\n",
-      "    }\n",
-      "  }),\n",
-      "  footer: locate(loc => {\n",
-      "    align(center)[#text(size: 9pt)[#counter(page).display()]]\n",
-      "  })\n",
-      ")\n\n",
-      "#show raw.where(block: true): block.with(\n",
-      "  fill: luma(240),\n",
-      "  inset: 8pt,\n",
-      "  radius: 4pt,\n",
-      "  width: 100%\n",
-      ")\n\n",
-      "#show link: underline\n\n",
-      "#include filepath\n"
-    )
-    .to_string()
-  }
+    let mut refreshed = Vec::new();
 
-  /// Get the fallback "playful" template content.
-  fn get_fallback_playful_template() -> String {
-    concat!(
-      "#set page(paper: \"a4\", margin: (top: 2cm, bottom: 2cm, left: 2cm, right: 2cm))\n",
-      "#set text(font: (\"Helvetica\", \"Arial\"), size: 11pt)\n",
-      "#set par(justify: true, leading: 0.6em)\n\n",
-      "#set heading(numbering: \"1.\")\n",
-      "#show heading.where(level: 1): it => [\n",
-      "  #set text(fill: orange, size: 18pt, weight: \"bold\")\n",
-      "  #block(spacing: 1.5em)[#it]\n",
-      "]\n\n",
-      "#show heading.where(level: 2): it => [\n",
-      "  #set text(fill: blue, size: 14pt, weight: \"bold\")\n",
-      "  #block(spacing: 1em)[#it]\n",
-      "]\n\n",
-      "#show raw.where(block: true): block.with(\n",
-      "  fill: luma(248),\n",
-      "  stroke: (left: 3pt + orange),\n",
-      "  inset: 12pt,\n",
-      "  radius: 4pt,\n",
-      "  width: 100%\n",
-      ")\n\n",
-      "#show link: it => [\n",
-      "  #set text(fill: blue)\n",
-      "  #underline(it)\n",
-      "]\n\n",
-      "#include filepath\n"
-    )
-    .to_string()
-  }
+    for name in embedded_templates::EMBEDDED_TEMPLATE_NAMES {
+      if let Some(content) = embedded_templates::get_embedded_template(name) {
+        let template_path = templates_dir.join(format!("{name}.typ"));
+        fs::write(&template_path, content)?;
+        refreshed.push(name.to_string());
+      }
+    }
 
-  /// Get the fallback "brutalist" template content.
-  fn get_fallback_brutalist_template() -> String {
-    concat!(
-      "#set page(paper: \"a4\", margin: (top: 1cm, bottom: 1cm, left: 1cm, right: 1cm))\n",
-      "#set text(font: \"Courier New\", size: 10pt)\n",
-      "#set par(justify: false, leading: 0.5em)\n\n",
-      "#set heading(numbering: \"1.\")\n",
-      "#show heading.where(level: 1): it => [\n",
-      "  #set text(size: 16pt, weight: \"bold\")\n",
-      "  #block(\n",
-      "    fill: black,\n",
-      "    inset: 8pt,\n",
-      "    width: 100%\n",
-      "  )[\n",
-      "    #text(fill: white)[#it.body]\n",
-      "  ]\n",
-      "  #v(0.5em)\n",
-      "]\n\n",
-      "#show raw.where(block: true): block.with(\n",
-      "  fill: black,\n",
-      "  inset: 8pt,\n",
-      "  radius: 0pt,\n",
-      "  width: 100%\n",
-      ")\n\n",
-      "#show raw: it => [\n",
-      "  #set text(fill: white, font: \"Courier New\")\n",
-      "  #it\n",
-      "]\n\n",
-      "#show link: it => [\n",
-      "  #set text(weight: \"bold\")\n",
-      "  #rect(stroke: 1pt + black, inset: 2pt)[#it]\n",
-      "]\n\n",
-      "#include filepath\n"
-    )
-    .to_string()
-  }
-
-  /// Get the fallback "darko" template content.
-  fn get_fallback_darko_template() -> String {
-    concat!(
-      "#set page(\n",
-      "  paper: \"a4\",\n",
-      "  margin: (top: 2cm, bottom: 2cm, left: 2cm, right: 2cm),\n",
-      "  fill: rgb(\"1a1a1a\")\n",
-      ")\n",
-      "#set text(font: (\"Helvetica\", \"Arial\"), size: 11pt, fill: white)\n",
-      "#set par(justify: true, leading: 0.6em)\n\n",
-      "#set heading(numbering: \"1.\")\n",
-      "#show heading.where(level: 1): it => [\n",
-      "  #set text(fill: purple, size: 18pt, weight: \"bold\")\n",
-      "  #block(spacing: 1.5em)[#it]\n",
-      "]\n\n",
-      "#show heading.where(level: 2): it => [\n",
-      "  #set text(fill: teal, size: 14pt, weight: \"bold\")\n",
-      "  #block(spacing: 1em)[#it]\n",
-      "]\n\n",
-      "#show raw.where(block: true): block.with(\n",
-      "  fill: luma(40),\n",
-      "  stroke: (left: 3pt + purple),\n",
-      "  inset: 12pt,\n",
-      "  radius: 6pt,\n",
-      "  width: 100%\n",
-      ")\n\n",
-      "#show raw: it => [\n",
-      "  #set text(fill: white)\n",
-      "  #it\n",
-      "]\n\n",
-      "#show link: it => [\n",
-      "  #set text(fill: teal)\n",
-      "  #underline(it)\n",
-      "]\n\n",
-      "#include filepath\n"
-    )
-    .to_string()
+    Ok(refreshed)
   }
 }
 
@@ -580,11 +451,21 @@ mod tests {
   }
 
   #[test]
-  fn test_fallback_templates() {
-    assert!(!Config::get_fallback_none_template().is_empty());
-    assert!(!Config::get_fallback_simple_template().is_empty());
-    assert!(!Config::get_fallback_playful_template().is_empty());
-    assert!(!Config::get_fallback_brutalist_template().is_empty());
-    assert!(!Config::get_fallback_darko_template().is_empty());
+  fn test_embedded_templates() {
+    use super::embedded_templates;
+
+    // Test that all embedded templates are non-empty
+    for name in embedded_templates::EMBEDDED_TEMPLATE_NAMES {
+      let content = embedded_templates::get_embedded_template(name);
+      assert!(content.is_some(), "Template '{}' should exist", name);
+      assert!(!content.unwrap().is_empty(), "Template '{}' should not be empty", name);
+    }
+
+    // Test that we have at least the expected templates
+    assert!(embedded_templates::EMBEDDED_TEMPLATE_NAMES.contains(&"none"));
+    assert!(embedded_templates::EMBEDDED_TEMPLATE_NAMES.contains(&"simple"));
+    assert!(embedded_templates::EMBEDDED_TEMPLATE_NAMES.contains(&"darko"));
+    assert!(embedded_templates::EMBEDDED_TEMPLATE_NAMES.contains(&"brutalist"));
+    assert!(embedded_templates::EMBEDDED_TEMPLATE_NAMES.contains(&"playful"));
   }
 }
