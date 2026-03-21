@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.2] - 2026-03-21
+
+### 🚀 Features
+
+- *(templates)* Add templaes as external files instead of embed in the code ([b0bd399](https://github.com/tschinz/md-pdf/commit/b0bd399aaf180c1bce384a462f5468f137627b87) - zas)
+- *(refresh)* Refresh outdates templates ([a395c82](https://github.com/tschinz/md-pdf/commit/a395c82293a64ec960428e2ec143819cc2d33e86) - zas)
+- *(build)* Add templates dynamically with the build.rs as module embedded_templates.rs ([1be194d](https://github.com/tschinz/md-pdf/commit/1be194da8cef543020fb037aa81f3bbf95761e04) - zas)
+
+### 🐛 Bug Fixes
+
+- *(default_author)* Md-pdf default author in config file ([5f7f8ac](https://github.com/tschinz/md-pdf/commit/5f7f8ac4580edbaee7aced21cf4fc5a0307c8c3a) - zas)
+- *(lint)* Clippy and rustfmt ([f6779ff](https://github.com/tschinz/md-pdf/commit/f6779ff2fe7fdc43d7dbd8dafa6c7c2c000943cd) - zas)
+
+### 📚 Documentation
+
+- Updated readme and comprehensive-guide ([4fdb725](https://github.com/tschinz/md-pdf/commit/4fdb7253da61bafad1e0fbd246c416b117e8a18f) - zas)
+
+### ⚙️ Miscellaneous Tasks
+
+- *(test)* Add more test for raw-md ([8e59b75](https://github.com/tschinz/md-pdf/commit/8e59b7593dc0f5cbf72464d8e6305cd8e18e42aa) - zas)
+- *(version)* Bump version to 0.1.2 ([4219b9d](https://github.com/tschinz/md-pdf/commit/4219b9d2d52f00a680946d77b107f17ca4d217a9) - zas)
+
+
+**Full Changelog**: [v0.1.1...0.1.2](https://github.com/tschinz/md-pdf/compare/v0.1.1...0.1.2)
+
 ## [0.1.1] - 2026-03-12
 
 ### 🐛 Bug Fixes
