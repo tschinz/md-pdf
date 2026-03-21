@@ -261,14 +261,11 @@ fn refresh_templates() {
   match Config::load() {
     Ok(config) => {
       // Use configured templates_dir if set, otherwise use default location
-      let templates_dir = config
-        .templates_dir
-        .clone()
-        .unwrap_or_else(|| {
-          dirs::home_dir()
-            .map(|h| h.join(".config").join("md-pdf").join("templates"))
-            .unwrap_or_else(|| std::path::PathBuf::from("templates"))
-        });
+      let templates_dir = config.templates_dir.clone().unwrap_or_else(|| {
+        dirs::home_dir()
+          .map(|h| h.join(".config").join("md-pdf").join("templates"))
+          .unwrap_or_else(|| std::path::PathBuf::from("templates"))
+      });
 
       match Config::refresh_templates(&templates_dir) {
         Ok(refreshed) => {
