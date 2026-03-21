@@ -70,6 +70,11 @@ fn main() {
     return;
   }
 
+  if args.should_refresh_templates() {
+    refresh_templates();
+    return;
+  }
+
   // If user wants to list templates, do that and exit
   if args.should_list_templates() {
     list_available_templates();
@@ -239,5 +244,53 @@ fn create_default_config() {
   } else {
     eprintln!("Could not determine home directory");
     process::exit(1);
+  }
+}
+
+/// Refresh templates in the user's config directory with the latest embedded versions.
+///
+/// This will overwrite the built-in templates (none, simple, darko, brutalist, playful)
+/// with the versions embedded in the binary. Custom templates are preserved.
+///
+/// # Panics
+///
+/// Exits the process with code 1 if:
+/// - Configuration cannot be loaded
+/// - Templates cannot be written
+fn refresh_templates() {
+  match Config::load() {
+    Ok(config) => {
+      // Use configured templates_dir if set, otherwise use default location
+      let templates_dir = config
+        .templates_dir
+        .clone()
+        .unwrap_or_else(|| {
+          dirs::home_dir()
+            .map(|h| h.join(".config").join("md-pdf").join("templates"))
+            .unwrap_or_else(|| std::path::PathBuf::from("templates"))
+        });
+
+      match Config::refresh_templates(&templates_dir) {
+        Ok(refreshed) => {
+          println!(
+            "✓ Refreshed {} templates in: {}",
+            refreshed.len(),
+            templates_dir.canonicalize().unwrap_or_else(|_| templates_dir.clone()).display()
+          );
+          for name in &refreshed {
+            println!("  - {}.typ", name);
+          }
+          println!("\nTemplates are now up-to-date with the latest embedded versions.");
+        }
+        Err(e) => {
+          eprintln!("Error refreshing templates: {e}");
+          process::exit(1);
+        }
+      }
+    }
+    Err(e) => {
+      eprintln!("Error loading configuration: {e}");
+      process::exit(1);
+    }
   }
 }

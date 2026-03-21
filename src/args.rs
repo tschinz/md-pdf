@@ -46,6 +46,9 @@ pub struct Args {
   /// Open the generated PDF file after creation.
   #[arg(long)]
   pub open: bool,
+  /// Refresh templates in the config directory with the latest embedded versions.
+  #[arg(long)]
+  pub refresh_templates: bool,
 }
 
 impl Args {
@@ -134,5 +137,10 @@ impl Args {
   /// Check if opening the PDF file was requested.
   pub fn should_open(&self) -> bool {
     self.open
+  }
+
+  /// Check if template refresh was requested.
+  pub fn should_refresh_templates(&self) -> bool {
+    self.refresh_templates
   }
 }
