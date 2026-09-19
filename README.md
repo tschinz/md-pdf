@@ -1,4 +1,4 @@
-![GitHub Repo stars](https://img.shields.io/github/stars/tschinz/md-pdf)
+ ![GitHub Repo stars](https://img.shields.io/github/stars/tschinz/md-pdf)
 ![GitHub Release](https://img.shields.io/github/v/release/tschinz/md-pdf)
 ![](https://tianji.zahno.dev/telemetry/clnzoxcy10001vy2ohi4obbi0/cmm9n0cbu0800kba1ozor679f.gif)
 
@@ -19,6 +19,7 @@ A fast, lightweight command-line tool that converts Markdown files to profession
 - 📂 **Auto-open** generated PDFs
 - 🔗 **Link validation** checks external URLs
 - 📝 **Rich metadata** support via YAML front matter
+- 🖼️ **Sizable & alignable images** via the HTML `<img>` tag
 
 ## Installation
 
@@ -139,6 +140,38 @@ participants: ["Participant1", "Participant2"]
 template: "simple"
 ---
 # Content starts here
+```
+
+## Images
+
+Standard Markdown image syntax renders images at their natural size:
+
+```md
+![alt text](path/to/image.svg)
+```
+
+Markdown itself has no syntax for sizing images (Pandoc-style attributes such as
+`![](img.svg){width="40%"}` are **not** supported by the underlying parser). To
+resize or align an image, use the HTML `<img>` tag instead:
+
+```md
+<!-- 40% of the text width, centered -->
+<img src="path/to/image.svg" alt="alt text" width="40.0%" align="center">
+
+<!-- fixed height, left aligned -->
+<img src="path/to/image.svg" width="120" height="80" align="left">
+```
+
+- `width` / `height` accept a percentage (`40%`, `40.0%`) or an absolute value in
+  points (`120`).
+- `align` accepts `left`, `center`, or `right`.
+- Paths containing spaces must be wrapped in `<>` in Markdown syntax:
+  `![alt](<my image.svg>)`.
+
+For full control you can also inject raw Typst via an HTML comment:
+
+```md
+<!--raw-typst #align(center)[#image("path/to/image.svg", width: 40%)] -->
 ```
 
 ## Configuration

@@ -4,7 +4,7 @@ subtitle: "A comprehensive guide"
 logo: "resources/md-pdf.svg"
 author: "tschinz"
 date: "2026-03-21"
-version: "v0.1.2"
+version: "v0.1.3"
 language: "en"
 toc: true
 template: "simple"
@@ -607,6 +607,80 @@ keywords:
     - automation
 ---
 ```
+
+# Working with Images
+
+Standard Markdown image syntax renders an image at its natural size:
+
+```md
+![md-pdf logo](resources/md-pdf.svg)
+```
+
+![md-pdf logo](resources/md-pdf.svg)
+
+## Resizing Images
+
+Markdown has no syntax of its own for sizing images. Pandoc-style attributes
+such as `![](img.svg){.center width="40%"}` are **not** supported by the
+underlying `cmarker`/CommonMark parser and would appear as literal text.
+
+Instead, use the HTML `<img>` tag, which md-pdf renders with support for
+`width`, `height`, and `align`:
+
+- `width` / `height` — a percentage (`40%`, `40.0%`) or an absolute value in
+  points (`120`).
+- `align` — `left`, `center`, or `right`.
+
+The same logo below is scaled down to 60% and then to 30% of the text width:
+
+```md
+<img src="resources/md-pdf.svg" alt="md-pdf logo" width="60%">
+<img src="resources/md-pdf.svg" alt="md-pdf logo" width="30%">
+```
+
+<img src="resources/md-pdf.svg" alt="md-pdf logo" width="60%">
+
+<img src="resources/md-pdf.svg" alt="md-pdf logo" width="30%">
+
+## Aligning Images
+
+Add `align` to place a resized image. The three examples below all use the
+**same** `width="30%"` so only the alignment changes — left, center, then right.
+
+### Left
+
+```md
+<img src="resources/md-pdf.svg" alt="md-pdf logo" width="30%" align="left">
+```
+
+<img src="resources/md-pdf.svg" alt="md-pdf logo" width="30%" align="left">
+
+### Center
+
+```md
+<img src="resources/md-pdf.svg" alt="md-pdf logo" width="30%" align="center">
+```
+
+<img src="resources/md-pdf.svg" alt="md-pdf logo" width="30%" align="center">
+
+### Right
+
+```md
+<img src="resources/md-pdf.svg" alt="md-pdf logo" width="30%" align="right">
+```
+
+<img src="resources/md-pdf.svg" alt="md-pdf logo" width="30%" align="right">
+
+## Tips
+
+- Image paths that contain spaces must be wrapped in `<>` when using Markdown
+  syntax: `![alt](<my image.svg>)`.
+- For full control over placement you can inject raw Typst through an HTML
+  comment:
+
+  ```md
+  <!--raw-typst #align(center)[#image("resources/md-pdf.svg", width: 40%)] -->
+  ```
 
 # Usage Guide
 
