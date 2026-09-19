@@ -10,7 +10,7 @@ crate_name := "md_pdf"
 args := ""
 project_directory := justfile_directory()
 release := `git describe --tags --always`
-version := "0.1.2"
+version := "0.1.3"
 url := "https://github.com/tschinz/md-pdf"
 file := "examples/comprehensive-guide.md"
 
