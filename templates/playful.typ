@@ -1,6 +1,6 @@
 // Playful Template
 // Colorful inspired by Dieter Rams
-#import "@preview/cmarker:0.1.8"
+#import "@preview/cmarker:0.1.10"
 #import "@preview/mitex:0.2.6": mitex
 
 // Get system inputs
@@ -316,6 +316,21 @@
 
 #cmarker.render(
   read(filepath),
-  scope: (image: (path, alt: none) => image(path, alt: alt)),
+  // Forward all args (width/height, format, ..) so HTML <img> sizing works
+  scope: (image: (source, ..args) => image(source, ..args)),
+  // Custom <img> handler: supports width/height (as % or pt, incl. decimals)
+  // and align="left"|"center"|"right". Example in markdown:
+  //   <img src="pic.svg" width="40.0%" align="center">
+  html: (
+    img: ("void", attrs => {
+      let parse-dim(d) = if d.ends-with("%") { float(d.slice(0, -1)) * 1% } else { float(d) * 1pt }
+      let args = (:)
+      if "width" in attrs { args += (width: parse-dim(attrs.width)) }
+      if "height" in attrs { args += (height: parse-dim(attrs.height)) }
+      let img = image(attrs.src, alt: attrs.at("alt", default: none), ..args)
+      let a = attrs.at("align", default: none)
+      if a == "center" { align(center, img) } else if a == "right" { align(right, img) } else if a == "left" { align(left, img) } else { img }
+    }),
+  ),
   math: mitex
 )
