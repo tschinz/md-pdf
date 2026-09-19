@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.3] - 2026-09-19
+
+### 🚀 Features
+
+- *(templates)* Size and align images via HTML <img> tag ([b126655](https://github.com/tschinz/md-pdf/commit/b126655780638a1db397cea20b6d3d60e63a62e7) - zas)
+
+### 🐛 Bug Fixes
+
+- *(deps)* Upgrade reqwest to 0.12 to resolve security advisories ([cd407c2](https://github.com/tschinz/md-pdf/commit/cd407c25adc2c64042c14264bc04f68b41fe146f) - zas)
+
+### 📚 Documentation
+
+- Document image sizing and alignment ([6b6d813](https://github.com/tschinz/md-pdf/commit/6b6d813996a0a111e541e1f6522cc27da85c187c) - zas)
+
+### ⚙️ Miscellaneous Tasks
+
+- *(examples)* Regenerate example PDFs ([bc6565a](https://github.com/tschinz/md-pdf/commit/bc6565a650c3c2f763f62d983d3ca140993df35c) - zas)
+- *(release)* Bump version to 0.1.3 ([8dc9781](https://github.com/tschinz/md-pdf/commit/8dc97815fa1212eb22280b3e65bcd4c6d0cd31bc) - zas)
+
+
+**Full Changelog**: [v0.1.2...0.1.3](https://github.com/tschinz/md-pdf/compare/v0.1.2...0.1.3)
+
 ## [0.1.2] - 2026-03-21
 
 ### 🚀 Features
