@@ -115,7 +115,6 @@ impl DateValue {
       }
     }
   }
-
 }
 
 impl fmt::Display for DateValue {
