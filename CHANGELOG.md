@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.0] - 2026-09-24
+
+### 🚀 Features
+
+- *(frontmatter)* [**breaking**] Adopt OKF-canonical field names with legacy aliases ([8c8ab04](https://github.com/tschinz/md-pdf/commit/8c8ab04e0bdaf729ef825cc93eb3660569b5dc2a) - zas)
+- *(templates)* Add document type label and adopt OKF field names ([21d7ce7](https://github.com/tschinz/md-pdf/commit/21d7ce718ffd1d59866e2052eeb32d1ef427dc1a) - zas)
+
+### 📚 Documentation
+
+- *(readme)* Document OKF front matter compatibility ([f7f893b](https://github.com/tschinz/md-pdf/commit/f7f893b697497e1056fdfd5315abf9e72a8af80f) - zas)
+- *(examples)* Use OKF field names and add type field ([0b364e3](https://github.com/tschinz/md-pdf/commit/0b364e381d806b6b6822b06a5a05969be5d515de) - zas)
+- *(examples)* Add letter and professional examples ([f2d0733](https://github.com/tschinz/md-pdf/commit/f2d073319aa31252a217eaf5ea65224f8483b0de) - zas)
+
+### ⚙️ Miscellaneous Tasks
+
+- *(examples)* Regenerate example PDFs ([7d6d763](https://github.com/tschinz/md-pdf/commit/7d6d763744d8318ee55bbfb51362f6157cf7569c) - zas)
+- Keep private letter/professional templates out of git and crate ([b21d8b8](https://github.com/tschinz/md-pdf/commit/b21d8b897c0eb2b346b4bf4e65bafbc72ec2dc58) - zas)
+- *(release)* Bump version to 0.2.0 ([eccb9e4](https://github.com/tschinz/md-pdf/commit/eccb9e4bce311d4bb2d927b701e6c778ff2767fc) - zas)
+
+
+**Full Changelog**: [v0.1.3...0.2.0](https://github.com/tschinz/md-pdf/compare/v0.1.3...0.2.0)
+
 ## [0.1.3] - 2026-09-19
 
 ### 🚀 Features
