@@ -11,9 +11,10 @@
 // Front matter inputs
 #let has-frontmatter = sys.inputs.at("has_frontmatter", default: "false") == "true"
 #let fm-title = sys.inputs.at("fm_title", default: none)
-#let fm-subtitle = sys.inputs.at("fm_subtitle", default: none)
+#let fm-type = sys.inputs.at("fm_type", default: none)
+#let fm-description = sys.inputs.at("fm_description", default: none)
 #let fm-author = sys.inputs.at("fm_author", default: none)
-#let fm-date = sys.inputs.at("fm_date", default: none)
+#let fm-timestamp = sys.inputs.at("fm_timestamp", default: none)
 #let fm-tags = sys.inputs.at("fm_tags", default: none)
 #let fm-version = sys.inputs.at("fm_version", default: none)
 #let fm-logo = sys.inputs.at("logo", default: none)
@@ -49,11 +50,11 @@
 // Use front matter data or defaults
 #let document-author = if fm-author != none { fm-author } else { none }
 #let document-title = if fm-title != none { fm-title } else { filename }
-#let document-subtitle = if fm-subtitle != none { fm-subtitle } else { none }
+#let document-description = if fm-description != none { fm-description } else { none }
 
 // Parse date
-#let document-date = if fm-date != none {
-  let date-str = fm-date
+#let document-date = if fm-timestamp != none {
+  let date-str = fm-timestamp
   if date-str.len() == 10 and date-str.contains("-") {
     let parts = date-str.split("-")
     if parts.len() == 3 {
@@ -91,7 +92,7 @@
       stroke: none,
       inset: -0.5em,
       align: (x, y) => (left+bottom, right+top).at(x),
-      [#smallcaps[#document-title] #if document-subtitle != none {[| #smallcaps[#document-subtitle] ]}],
+      [#smallcaps[#document-title] #if document-description != none {[| #smallcaps[#document-description] ]}],
       [#if fm-logo != none {[#v(1.2cm)#image(fm-logo,width:2cm)]}]
     )
     #if fm-logo != none {[
@@ -185,6 +186,11 @@
 // Show basic document metadata if front matter exists
 #if has-frontmatter [
   #v(1em)
+  // document type label
+  #if fm-type != none [
+    #align(left)[#box(inset: (x: 8pt, y: 3pt), radius: 3pt, stroke: 0.8pt + rams-brown)[#text(size: 8pt, weight: "bold", tracking: 1.5pt, fill: rams-brown)[#upper[#fm-type]]]]
+    #v(0.4em)
+  ]
   // title
   #if fm-title != none [
     #align(left)[
@@ -192,10 +198,10 @@
     ]
     #v(0.5em)
   ]
-  // subtitle
-  #if fm-subtitle != none [
+  // description
+  #if fm-description != none [
     #align(left)[
-      #text(size: 13pt, style: "italic", fill: rams-dark-grey)[#fm-subtitle]
+      #text(size: 13pt, style: "italic", fill: rams-dark-grey)[#fm-description]
     ]
     #v(0.8em)
   ]
