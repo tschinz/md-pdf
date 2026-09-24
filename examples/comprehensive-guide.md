@@ -1,10 +1,11 @@
 ---
+type: "guide"
 title: "md-pdf"
-subtitle: "A comprehensive guide"
+description: "A comprehensive guide"
 logo: "resources/md-pdf.svg"
 author: "tschinz"
-date: "2026-03-21"
-version: "v0.1.3"
+timestamp: "2026-03-21"
+version: "v0.2.0"
 language: "en"
 toc: true
 template: "simple"
@@ -223,7 +224,7 @@ The configuration file uses RON (Rust Object Notation) format, which is human-re
 | Field              | Type              | Description                         | Default Value                | Examples                        |
 | ------------------ | ----------------- | ----------------------------------- | ---------------------------- | ------------------------------- |
 | `templates_dir`    | `Option<PathBuf>` | Directory containing template files | `~/.config/md-pdf/templates` | Custom template collections     |
-| `default_template` | `Option<String>`  | Template name to use by default     | `"simple"`                   | `"academic"`, `"corporate"`     |
+| `default_template` | `Option<String>`  | Template name to use by default     | `"simple"`                   | `"brutalist"`, `"darko"`        |
 | `default_language` | `Option<String>`  | Document language code              | `"en"`                       | `"de"`, `"fr"`, `"es"`          |
 | `default_toc`      | `Option<bool>`    | Include table of contents           | `true`                       | Per-document override available |
 | `default_author`   | `Option<String>`  | Default document author             | `"User"`                     | Your name or organization       |
@@ -318,18 +319,24 @@ These variables are automatically provided by md-pdf:
 
 All YAML front matter fields become template variables.All fields are optional. Common fields are:
 
-| Field          | Variable Name  | Type   | Example Value       | Usage                                                                                |
-| -------------- | -------------- | ------ | ------------------- | ------------------------------------------------------------------------------------ |
-| `title`        | `title`        | String | `"My Document"`     | Document title                                                                       |
-| `subtitle`     | `subtitle`     | String | `"Guide"`           | Document subtitle                                                                    |
-| `author`       | `author`       | String | `"John Doe"`        | Document author                                                                      |
-| `logo`         | `logo`         | String | `"./logo.png"`      | Rectangular logo                                                                     |
-| `date`         | `date`         | String | `"2024-01-22"`      | Publication date                                                                     |
-| `version`      | `version`      | String | `"1.0.0"`           | Document version                                                                     |
-| `tags`         | `tags`         | Array  | `["docs", "guide"]` | Document tags                                                                        |
-| `participants` | `participants` | Array  | `["Him", "Her"]`    | List of participants                                                                 |
-| `language`     | `language`     | String | `"en"`              | Document language [`en`, `de`, `fr`]                                                 |
-| `template`     | `template`     | String | `"brutalist"`       | Template name [`brutalist`, `playful`, `simple`, `none`, `your custom templatename`] |
+The canonical field names follow [OKF](https://okf.md/spec/); the previous
+md-pdf names are still accepted as aliases.
+
+| Field          | Alias      | Type   | Example Value       | Usage                                                                                |
+| -------------- | ---------- | ------ | ------------------- | ------------------------------------------------------------------------------------ |
+| `type`         | —          | String | `"report"`          | Document type (shown as a label above the title)                                     |
+| `title`        | —          | String | `"My Document"`     | Document title                                                                       |
+| `description`  | `subtitle` | String | `"Guide"`           | One-line description                                                                 |
+| `author`       | —          | String | `"John Doe"`        | Document author                                                                      |
+| `logo`         | —          | String | `"./logo.png"`      | Rectangular logo                                                                     |
+| `timestamp`    | `date`     | String | `"2024-01-22"`      | Document date (also accepts ISO 8601)                                                |
+| `version`      | —          | String | `"1.0.0"`           | Document version                                                                     |
+| `status`       | —          | String | `"draft"`           | Lifecycle state                                                                      |
+| `resource`     | —          | String | `"https://…"`       | A URI the document describes                                                         |
+| `tags`         | `keywords` | Array  | `["docs", "guide"]` | Document tags                                                                        |
+| `participants` | —          | Array  | `["Him", "Her"]`    | List of participants                                                                 |
+| `language`     | `lang`     | String | `"en"`              | Document language [`en`, `de`, `fr`]                                                 |
+| `template`     | —          | String | `"brutalist"`       | Template name [`brutalist`, `playful`, `simple`, `none`, `your custom templatename`] |
 
 ### Custom Fields
 
@@ -450,7 +457,7 @@ The simplest front matter includes core document information:
 ---
 title: "My Document"
 author: "John Doe"
-date: "2024-01-22"
+timestamp: "2024-01-22"
 tags:
     - tag1
     - tag2
@@ -518,8 +525,8 @@ published: true
 tags: ["markdown", "pdf", "documentation"]
 languages: ["en", "es", "fr"]
 
-# Multi-line arrays
-keywords:
+# Multi-line arrays (a custom passthrough field)
+topics:
     - technical writing
     - automation tools
     - document processing
@@ -562,7 +569,7 @@ project_info:
 
 ```yaml
 # ISO 8601 dates
-date: "2024-01-22"
+timestamp: "2024-01-22"
 created: 2024-01-22T10:30:00Z
 deadline: "2024-12-31T23:59:59Z"
 
@@ -584,11 +591,11 @@ md-pdf uses intelligent precedence for configuration values:
 ```yaml
 ---
 title: "Machine Learning Applications in Document Processing"
-subtitle: "A Comprehensive Survey and Future Directions"
+description: "A Comprehensive Survey and Future Directions"
 author: "Dr. Sarah Johnson"
 affiliation: "University of Technology"
 department: "Computer Science"
-date: "2024-01-22"
+timestamp: "2024-01-22"
 template: "academic"
 toc: true
 language: "en"
@@ -599,12 +606,6 @@ abstract: |
     including natural language processing, computer vision, and
     hybrid approaches. We analyze current methodologies, identify
     key challenges, and propose future research directions.
-keywords:
-    - machine learning
-    - document processing
-    - natural language processing
-    - computer vision
-    - automation
 ---
 ```
 

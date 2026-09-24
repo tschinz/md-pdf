@@ -1,9 +1,10 @@
 ---
+type: "brief"
 title: "USS Enterprise Tech Brief"
-subtitle: "Markdown Elements Guide"
+description: "Markdown Elements Guide"
 logo: "resources/starfleet.svg"
 author: "Lt. Commander Data"
-date: "2024-12-20"
+timestamp: "2024-12-20"
 version: "NCC-1701-D"
 language: "en"
 toc: false
