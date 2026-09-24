@@ -154,8 +154,8 @@ pub fn convert_to_pdf(md_file: &Path, output: &str, template_option: Option<&Str
         if let Some(author) = &fm.author {
           println!("✓ Author: {author}");
         }
-        if let Some(date) = &fm.date {
-          println!("✓ Date: {date}");
+        if let Some(timestamp) = &fm.timestamp {
+          println!("✓ Date: {timestamp}");
         }
         if let Some(version) = &fm.version {
           println!("✓ Version: {version}");

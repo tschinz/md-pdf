@@ -28,19 +28,33 @@ use std::fmt;
 /// ```
 #[derive(Debug, Clone, Deserialize, Serialize, Default)]
 pub struct FrontMatter {
+  /// A short string identifying the document type (e.g. `report`, `letter`,
+  /// `guide`).
+  #[serde(default, rename = "type")]
+  pub doc_type: Option<String>,
   /// Document title
   pub title: Option<String>,
-  /// Document subtitle
-  pub subtitle: Option<String>,
+  /// One-line description. `subtitle` is accepted as an alias.
+  #[serde(alias = "subtitle")]
+  pub description: Option<String>,
   /// Document author
   pub author: Option<String>,
-  /// Document date (can be string or number)
-  #[serde(default)]
-  pub date: Option<DateValue>,
-  /// Tags/keywords for the document
-  #[serde(default)]
+  /// Document timestamp. `date` is accepted as an alias. Accepts a `YYYY-MM-DD`
+  /// string, a `YYYYMMDD` or `YYYY` number, or an ISO 8601 timestamp
+  /// (e.g. `2026-09-21T14:30:00Z`, rendered as its date).
+  #[serde(default, alias = "date")]
+  pub timestamp: Option<DateValue>,
+  /// Tags for the document. `keywords` is accepted as an alias.
+  #[serde(default, alias = "keywords")]
   pub tags: Vec<String>,
-  /// Document language
+  /// Lifecycle status (e.g. `draft`, `review`, `final`).
+  #[serde(default)]
+  pub status: Option<String>,
+  /// A URI that the document describes.
+  #[serde(default)]
+  pub resource: Option<String>,
+  /// Document language. `lang` is accepted as an alias.
+  #[serde(alias = "lang")]
   pub language: Option<String>,
   /// Table of contents flag
   pub toc: Option<bool>,
@@ -48,7 +62,9 @@ pub struct FrontMatter {
   pub template: Option<String>,
   /// Document version
   pub version: Option<String>,
-  /// Additional custom fields
+  /// Additional custom fields. Any other key — `sources`, `generated`,
+  /// `verified`, `stale_after`, the letter `recipient_*`/`sender_*` fields,
+  /// etc. — is preserved and passed through to the template unchanged.
   #[serde(flatten)]
   pub extra: HashMap<String, serde_yaml::Value>,
 }
@@ -77,23 +93,35 @@ pub enum DateValue {
   Number(u32),
 }
 
-impl fmt::Display for DateValue {
-  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+impl DateValue {
+  /// Date-only rendering (`YYYY-MM-DD` where possible), suitable for display.
+  ///
+  /// String values keep only the part before an ISO 8601 `T` separator, so a
+  /// timestamp such as `2026-09-21T14:30:00Z` displays as `2026-09-21`.
+  /// Numeric values are formatted as `YYYY-MM-DD` (from `YYYYMMDD`) or
+  /// `YYYY-01-01` (from a bare year).
+  pub fn to_date_string(&self) -> String {
     match self {
-      DateValue::String(s) => write!(f, "{s}"),
+      DateValue::String(s) => s.split('T').next().unwrap_or(s).to_string(),
       DateValue::Number(n) => {
-        // Try to parse as YYYYMMDD format
         let s = n.to_string();
         if s.len() == 8 {
-          write!(f, "{}-{}-{}", &s[0..4], &s[4..6], &s[6..8])
+          format!("{}-{}-{}", &s[0..4], &s[4..6], &s[6..8])
         } else if s.len() == 4 {
-          // Just a year
-          write!(f, "{s}-01-01")
+          format!("{s}-01-01")
         } else {
-          write!(f, "{s}")
+          s
         }
       }
     }
+  }
+
+}
+
+impl fmt::Display for DateValue {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    // Display keeps the date-only form for backwards compatibility.
+    write!(f, "{}", self.to_date_string())
   }
 }
 
@@ -224,14 +252,19 @@ pub fn parse_frontmatter(content: &str) -> Result<(Option<FrontMatter>, String),
 pub fn frontmatter_to_typst_vars(front_matter: &FrontMatter) -> Vec<(String, String)> {
   let mut vars = Vec::new();
 
+  // Document type
+  if let Some(doc_type) = &front_matter.doc_type {
+    vars.push(("fm_type".to_string(), doc_type.clone()));
+  }
+
   // Add title if present
   if let Some(title) = &front_matter.title {
     vars.push(("fm_title".to_string(), title.clone()));
   }
 
-  // Add subtitle if present
-  if let Some(subtitle) = &front_matter.subtitle {
-    vars.push(("fm_subtitle".to_string(), subtitle.clone()));
+  // Add description if present
+  if let Some(description) = &front_matter.description {
+    vars.push(("fm_description".to_string(), description.clone()));
   }
 
   // Add author if present
@@ -239,15 +272,24 @@ pub fn frontmatter_to_typst_vars(front_matter: &FrontMatter) -> Vec<(String, Str
     vars.push(("fm_author".to_string(), author.clone()));
   }
 
-  // Add date if present
-  if let Some(date) = &front_matter.date {
-    vars.push(("fm_date".to_string(), date.to_string()));
+  // Add timestamp if present, rendered as a date for display.
+  if let Some(timestamp) = &front_matter.timestamp {
+    vars.push(("fm_timestamp".to_string(), timestamp.to_date_string()));
   }
 
   // Add tags as comma-separated string
   if !front_matter.tags.is_empty() {
-    let tags_str = front_matter.tags.join(",");
-    vars.push(("fm_tags".to_string(), tags_str));
+    vars.push(("fm_tags".to_string(), front_matter.tags.join(",")));
+  }
+
+  // Lifecycle status
+  if let Some(status) = &front_matter.status {
+    vars.push(("fm_status".to_string(), status.clone()));
+  }
+
+  // Described resource URI
+  if let Some(resource) = &front_matter.resource {
+    vars.push(("fm_resource".to_string(), resource.clone()));
   }
 
   // Add language if present
@@ -324,7 +366,7 @@ This is the markdown content."#;
     let fm = front_matter.unwrap();
 
     assert_eq!(fm.title, Some("Test Document".to_string()));
-    assert_eq!(fm.subtitle, Some("A Subtitle".to_string()));
+    assert_eq!(fm.description, Some("A Subtitle".to_string())); // `subtitle` alias
     assert_eq!(fm.author, Some("John Doe".to_string()));
     assert_eq!(fm.tags, vec!["test", "example"]);
     assert!(markdown.trim().starts_with("# Main Content"));
@@ -343,7 +385,7 @@ Content here"#;
     let (front_matter, _) = parse_frontmatter(content).unwrap();
     let fm = front_matter.unwrap();
 
-    if let Some(DateValue::Number(date)) = fm.date {
+    if let Some(DateValue::Number(date)) = fm.timestamp {
       assert_eq!(date, 20240122);
       assert_eq!(DateValue::Number(date).to_string(), "2024-01-22");
     } else {
@@ -369,23 +411,24 @@ Content here"#;
 
     let fm = FrontMatter {
       title: Some("Test".to_string()),
-      subtitle: Some("Subtitle".to_string()),
+      description: Some("Subtitle".to_string()),
       author: Some("Author".to_string()),
-      date: Some(DateValue::String("2024-01-22".to_string())),
+      timestamp: Some(DateValue::String("2024-01-22".to_string())),
       tags: vec!["tag1".to_string(), "tag2".to_string()],
       language: Some("en".to_string()),
       toc: Some(true),
       template: Some("elegant".to_string()),
       version: Some("1.0.0".to_string()),
       extra,
+      ..Default::default()
     };
 
     let vars = frontmatter_to_typst_vars(&fm);
 
     assert!(vars.contains(&("fm_title".to_string(), "Test".to_string())));
-    assert!(vars.contains(&("fm_subtitle".to_string(), "Subtitle".to_string())));
+    assert!(vars.contains(&("fm_description".to_string(), "Subtitle".to_string())));
     assert!(vars.contains(&("fm_author".to_string(), "Author".to_string())));
-    assert!(vars.contains(&("fm_date".to_string(), "2024-01-22".to_string())));
+    assert!(vars.contains(&("fm_timestamp".to_string(), "2024-01-22".to_string())));
     assert!(vars.contains(&("fm_tags".to_string(), "tag1,tag2".to_string())));
     assert!(vars.contains(&("fm_language".to_string(), "en".to_string())));
     assert!(vars.contains(&("fm_toc".to_string(), "true".to_string())));
@@ -397,5 +440,84 @@ Content here"#;
     assert!(vars.contains(&("client".to_string(), "ACME Corp".to_string())));
     assert!(vars.contains(&("budget".to_string(), "50000".to_string())));
     assert!(vars.contains(&("approved".to_string(), "true".to_string())));
+  }
+
+  #[test]
+  fn test_legacy_aliases_parse() {
+    // Legacy key spellings should map onto the canonical fields.
+    let content = r#"---
+type: report
+title: "Doc"
+description: "One-line summary"
+timestamp: "2026-09-21T14:30:00Z"
+keywords: ["alpha", "beta"]
+lang: "de"
+status: draft
+resource: "https://example.com/asset"
+---
+# Body"#;
+
+    let (fm, _) = parse_frontmatter(content).unwrap();
+    let fm = fm.unwrap();
+
+    assert_eq!(fm.doc_type.as_deref(), Some("report"));
+    assert_eq!(fm.description.as_deref(), Some("One-line summary"));
+    assert_eq!(fm.tags, vec!["alpha".to_string(), "beta".to_string()]); // keywords -> tags
+    assert_eq!(fm.language.as_deref(), Some("de")); // lang -> language
+    assert_eq!(fm.status.as_deref(), Some("draft"));
+    assert_eq!(fm.resource.as_deref(), Some("https://example.com/asset"));
+    assert_eq!(fm.timestamp.as_ref().map(|d| d.to_date_string()), Some("2026-09-21".to_string()));
+    // No known/aliased key should leak into `extra`
+    for k in ["type", "description", "subtitle", "timestamp", "date", "keywords", "lang", "status", "resource"] {
+      assert!(!fm.extra.contains_key(k), "{k} should not be in extra");
+    }
+  }
+
+  #[test]
+  fn test_subtitle_and_date_aliases() {
+    // The legacy `subtitle` and `date` keys resolve to description/timestamp.
+    let content = r#"---
+subtitle: "Legacy subtitle"
+date: "2024-01-22"
+---
+# Body"#;
+    let (fm, _) = parse_frontmatter(content).unwrap();
+    let fm = fm.unwrap();
+    assert_eq!(fm.description.as_deref(), Some("Legacy subtitle"));
+    assert_eq!(fm.timestamp.as_ref().map(|d| d.to_date_string()), Some("2024-01-22".to_string()));
+  }
+
+  #[test]
+  fn test_date_display_forms() {
+    // ISO 8601 timestamp renders as a date; numeric styles are formatted.
+    let iso = DateValue::String("2026-09-21T14:30:00Z".to_string());
+    assert_eq!(iso.to_date_string(), "2026-09-21");
+    assert_eq!(DateValue::Number(20260321).to_date_string(), "2026-03-21");
+    assert_eq!(DateValue::Number(2026).to_date_string(), "2026-01-01");
+  }
+
+  #[test]
+  fn test_vars_emitted_canonical_names() {
+    let content = r#"---
+title: "Names"
+description: "Desc"
+timestamp: "2026-09-21T14:30:00Z"
+keywords: ["x", "y"]
+lang: "fr"
+type: guide
+status: final
+---
+# Body"#;
+    let (fm, _) = parse_frontmatter(content).unwrap();
+    let vars = frontmatter_to_typst_vars(&fm.unwrap());
+
+    assert!(vars.contains(&("fm_type".to_string(), "guide".to_string())));
+    assert!(vars.contains(&("fm_description".to_string(), "Desc".to_string())));
+    assert!(vars.contains(&("fm_timestamp".to_string(), "2026-09-21".to_string())));
+    assert!(vars.contains(&("fm_tags".to_string(), "x,y".to_string())));
+    assert!(vars.contains(&("fm_language".to_string(), "fr".to_string())));
+    assert!(vars.contains(&("fm_status".to_string(), "final".to_string())));
+    // Legacy variable names are no longer emitted.
+    assert!(!vars.iter().any(|(k, _)| k == "fm_subtitle" || k == "fm_date" || k == "keywords" || k == "lang"));
   }
 }
