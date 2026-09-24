@@ -24,3 +24,7 @@ Cargo.lock
 security-report.json
 trivy-results.sarif
 supply-chain-report.json
+
+# Private templates (kept in the author's dotfiles repo, not shared publicly)
+templates/letter.typ
+templates/professional.typ

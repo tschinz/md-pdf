@@ -10,7 +10,10 @@ repository = "https://github.com/tschinz/md-pdf"
 categories = ["command-line-utilities", "multimedia", "template-engine"]
 keywords = ["markdown", "pdf", "typst", "converter", "templating"]
 exclude = [
-  ".github"
+  ".github",
+  # Private templates kept only in the author's dotfiles, not published
+  "templates/letter.typ",
+  "templates/professional.typ"
 ]
 
 [dependencies]
