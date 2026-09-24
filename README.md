@@ -19,6 +19,7 @@ A fast, lightweight command-line tool that converts Markdown files to profession
 - 📂 **Auto-open** generated PDFs
 - 🔗 **Link validation** checks external URLs
 - 📝 **Rich metadata** support via YAML front matter
+- 🧩 **[OKF](https://okf.md/spec/) front matter compatibility** with backwards-compatible aliases
 - 🖼️ **Sizable & alignable images** via the HTML `<img>` tag
 
 ## Installation
@@ -127,17 +128,57 @@ Add metadata to your markdown, all elements are optional:
 
 ```yaml
 ---
+type: "report"
 title: "My Document"
-subtitle: "Subtitle"
+description: "One-line description"
 logo: "path/to/logo.png"
 author: "Your Name"
-date: "2026-01-23"
+timestamp: "2026-01-23"
 version: "0.0.1"
+status: "draft"
+resource: "https://example.com/source"
 language: "en"
 toc: true
 tags: ["tag1", "tag2"]
 participants: ["Participant1", "Participant2"]
 template: "simple"
+---
+# Content starts here
+```
+
+### OKF-style YAML compatibility
+
+md-pdf front matter is compatible with [OKF (Open Knowledge Format)](https://okf.md/spec/)
+style YAML. OKF's fields map directly onto md-pdf's, and unknown keys are
+preserved and passed through to the template (so OKF trust fields such as
+`sources`, `generated`, `verified`, and `stale_after` are kept as-is).
+
+The canonical field names match OKF. For backwards compatibility, the previous
+md-pdf names are still accepted as aliases:
+
+| Field (canonical) | Accepted alias | Notes |
+|---|---|---|
+| `type` | — | Document type (e.g. `report`, `letter`), shown as a label above the title |
+| `title` | — | Document title |
+| `description` | `subtitle` | One-line description / subtitle |
+| `timestamp` | `date` | `YYYY-MM-DD`, `YYYYMMDD`/`YYYY` number, or ISO 8601 (`2026-09-21T14:30:00Z`, rendered as its date) |
+| `tags` | `keywords` | List of tags |
+| `status` | — | Lifecycle state (e.g. `draft`, `review`, `final`) |
+| `resource` | — | A URI the document describes |
+| `language` | `lang` | Document language |
+
+Both spellings work — for example, `description:` and `subtitle:` are equivalent:
+
+```yaml
+---
+type: "report"
+title: "Quarterly Results"
+description: "Q3 revenue and outlook"     # or: subtitle:
+author: "Your Name"
+timestamp: "2026-09-21T14:30:00Z"         # or: date:
+tags: ["finance", "q3"]                   # or: keywords:
+status: "draft"
+language: "en"                            # or: lang:
 ---
 # Content starts here
 ```
