@@ -29,18 +29,10 @@ file := "examples/comprehensive-guide.md"
     echo "Open : {{ open }}"
     echo "Rust :"
     echo "`{{ rust_env }}`"
-    echo "Typst CLI installed: `which typst || echo 'Not found'`"
-
-# Check if all dependencies are available
-check-deps:
-    @echo "Checking dependencies..."
-    @which cargo >/dev/null 2>&1 && echo "✓ cargo found" || echo "✗ cargo not found"
-    @which typst >/dev/null 2>&1 && echo "✓ typst-cli found" || echo "✗ typst-cli not found - run 'just install'"
 
 # Install dependencies
 install:
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-    cargo install typst-cli
     cargo install cargo-sbom
 
 # install the release version (default is the latest)
