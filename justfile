@@ -3,7 +3,6 @@
 #
 
 rust_env := "rustup show"
-rust_edition := "2024"
 open := if os() == "linux" { "xdg-open" } else if os() == "macos" { "open" } else { "start \"\" /max" }
 app_name := "md-pdf"
 crate_name := "md_pdf"
@@ -106,13 +105,10 @@ pdf-examples:
 test:
     cargo test
 
-# Check code with clippy
-clippy:
-    cargo clippy -- -D warnings
-
-# Run rustfmt with custom configuration
-rustfmt:
-    find {{ invocation_directory() }} -name \*.rs -exec rustfmt --config tab_spaces=2 --edition {{ rust_edition }} {} \;
+# Format code (rustfmt.toml) and lint it with clippy
+lint:
+    cargo fmt --all
+    cargo clippy --all-targets -- -D warnings
 
 # Clean build artifacts and temporary files
 clean:
