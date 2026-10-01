@@ -34,15 +34,17 @@ Templates fall back to the bundled default fonts. For their intended look, insta
 
 ```bash
 # From source
-cargo install --git https://github.com/tschinz/md-pdf
+cargo install --locked --git https://github.com/tschinz/md-pdf
 
 # Or build locally
 git clone https://github.com/tschinz/md-pdf
-cd md-pdf && cargo install --path .
+cd md-pdf && cargo install --locked --path .
 
 # from crates.io
-cargo install md-pdf
+cargo install --locked md-pdf
 ```
+
+`--locked` builds with the exact dependency versions md-pdf was tested with (from its `Cargo.lock`) instead of resolving newer ones.
 
 ## Quick Start
 

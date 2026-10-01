@@ -77,10 +77,10 @@ Install directly from the Git repository using cargo:
 
 ```bash
 # Install latest stable release
-cargo install --git https://github.com/tschinz/md-pdf
+cargo install --locked --git https://github.com/tschinz/md-pdf
 
 # Install specific version/tag
-cargo install --git https://github.com/tschinz/md-pdf --tag v0.1.0
+cargo install --locked --git https://github.com/tschinz/md-pdf --tag v0.1.0
 ```
 
 ### First Run & Auto-Setup
