@@ -37,3 +37,7 @@ comemo = "0.5"
 
 [dev-dependencies]
 tempfile = "3.24"
+
+[profile.release]
+# Strip symbols to keep the self-contained binary (embedded Typst) small
+strip = true
