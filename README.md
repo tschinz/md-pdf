@@ -134,13 +134,9 @@ template: "simple"
 
 ### OKF-style YAML compatibility
 
-md-pdf front matter is compatible with [OKF (Open Knowledge Format)](https://okf.md/spec/)
-style YAML. OKF's fields map directly onto md-pdf's, and unknown keys are
-preserved and passed through to the template (so OKF trust fields such as
-`sources`, `generated`, `verified`, and `stale_after` are kept as-is).
+md-pdf front matter is compatible with [OKF (Open Knowledge Format)](https://okf.md/spec/) style YAML. OKF's fields map directly onto md-pdf's, and unknown keys are preserved and passed through to the template (so OKF trust fields such as `sources`, `generated`, `verified`, and `stale_after` are kept as-is).
 
-The canonical field names match OKF. For backwards compatibility, the previous
-md-pdf names are still accepted as aliases:
+The canonical field names match OKF. For backwards compatibility, the previous md-pdf names are still accepted as aliases:
 
 | Field (canonical) | Accepted alias | Notes |
 |---|---|---|
@@ -177,9 +173,7 @@ Standard Markdown image syntax renders images at their natural size:
 ![alt text](path/to/image.svg)
 ```
 
-Markdown itself has no syntax for sizing images (Pandoc-style attributes such as
-`![](img.svg){width="40%"}` are **not** supported by the underlying parser). To
-resize or align an image, use the HTML `<img>` tag instead:
+Markdown itself has no syntax for sizing images (Pandoc-style attributes such as `![](img.svg){width="40%"}` are **not** supported by the underlying parser). To resize or align an image, use the HTML `<img>` tag instead:
 
 ```md
 <!-- 40% of the text width, centered -->
