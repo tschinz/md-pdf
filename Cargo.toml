@@ -13,7 +13,10 @@ exclude = [
   ".github",
   # Private templates kept only in the author's dotfiles, not published
   "templates/letter.typ",
-  "templates/professional.typ"
+  "templates/professional.typ",
+  # Example sources for the private templates (their rendered PDFs are kept)
+  "examples/letter.md",
+  "examples/professional.md"
 ]
 
 [dependencies]
