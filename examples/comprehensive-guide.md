@@ -5,7 +5,7 @@ description: "A comprehensive guide"
 logo: "resources/md-pdf.svg"
 author: "tschinz"
 timestamp: "2026-03-21"
-version: "v0.2.0"
+version: "v0.3.0"
 language: "en"
 toc: true
 template: "simple"
