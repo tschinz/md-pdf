@@ -8,9 +8,14 @@ All notable changes to this project will be documented in this file.
 
 - Embed the Typst compiler ([d967fe8](https://github.com/tschinz/md-pdf/commit/d967fe8c2c627ba94c685f389194446c9927f698) - zas)
 
+### 🐛 Bug Fixes
+
+- *(justfile)* Regenerate the SBOM before uploading it ([467a6ef](https://github.com/tschinz/md-pdf/commit/467a6ef8312aea883c6f1e89c25b5c1a4cba4014) - zas)
+
 ### 💼 Other
 
 - Strip symbols from release binaries ([9218432](https://github.com/tschinz/md-pdf/commit/92184328329df9acc122653acb388ea10f6c6ba9) - zas)
+- Exclude private template example sources from the crate ([4c2e05e](https://github.com/tschinz/md-pdf/commit/4c2e05e47456e28c31f48ec94b08b5add71b0715) - zas)
 
 ### 🚜 Refactoring
 
@@ -21,6 +26,7 @@ All notable changes to this project will be documented in this file.
 
 - Drop the Typst installation prerequisite ([fe96a9a](https://github.com/tschinz/md-pdf/commit/fe96a9a240eb5d4fd17bcc14093fbfc25c0b9c23) - zas)
 - *(readme)* Unwrap hard-wrapped paragraphs ([8596918](https://github.com/tschinz/md-pdf/commit/8596918f51e7411e936670be90d0c0eb834dd679) - zas)
+- Install with cargo install --locked ([2cdf1a7](https://github.com/tschinz/md-pdf/commit/2cdf1a7516fbc6c3eaeacfce1d5c3be489bd78dc) - zas)
 
 ### ⚙️ Miscellaneous Tasks
 
@@ -28,6 +34,13 @@ All notable changes to this project will be documented in this file.
 - *(justfile)* Remove typst-cli install and check recipes ([d5188e6](https://github.com/tschinz/md-pdf/commit/d5188e6560719840029350f68b70a7a85d3465f3) - zas)
 - *(release)* Bump version to 0.3.0 ([45847e5](https://github.com/tschinz/md-pdf/commit/45847e5e8025dd451cae431189b90b139c736c35) - zas)
 - *(examples)* Regenerate example PDFs ([58d2933](https://github.com/tschinz/md-pdf/commit/58d2933f6482eb985796b18d04448fea85054fee) - zas)
+- *(changelog)* Generate changelog for 0.3.0 ([39be0f1](https://github.com/tschinz/md-pdf/commit/39be0f153a41a685bf40dc0695300e21766035b5) - zas)
+- *(deps)* Update compatible Rust dependencies ([9f0f74a](https://github.com/tschinz/md-pdf/commit/9f0f74ad62bc407d1b6774782516526084801f56) - zas)
+- *(deps)* Upgrade ron to 0.12, dirs to 7, notify to 8 and opener to 0.9 ([bd8f035](https://github.com/tschinz/md-pdf/commit/bd8f03573884ee5768782fc3354bc8135ff39702) - zas)
+- *(templates)* Update mitex to 0.2.7 ([360b626](https://github.com/tschinz/md-pdf/commit/360b62645131239af7b1aec5d64d99e4313c78a9) - zas)
+- *(justfile)* Combine rustfmt and clippy into a lint recipe ([e1f627a](https://github.com/tschinz/md-pdf/commit/e1f627a44fec2298d8295b08394150f5fc364e22) - zas)
+- *(justfile)* Install releases with --locked ([c19d634](https://github.com/tschinz/md-pdf/commit/c19d634a078bc45d3fa3712e8cfdbb6bd3916a1a) - zas)
+- *(examples)* Regenerate the guide PDF ([83d99f8](https://github.com/tschinz/md-pdf/commit/83d99f8130eae428c358e537aec8fdd132d77afc) - zas)
 
 
 **Full Changelog**: [v0.2.0...0.3.0](https://github.com/tschinz/md-pdf/compare/v0.2.0...0.3.0)
