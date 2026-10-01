@@ -36,11 +36,11 @@ install:
 
 # install the release version (default is the latest)
 install-release release=release:
-    cargo install --git {{ url }} --tag {{ release }}
+    cargo install --locked --git {{ url }} --tag {{ release }}
 
 # install the nightly release
 install-nightly:
-    cargo install --git {{ url }}
+    cargo install --locked --git {{ url }}
 
 # Build and copy the release version of the program
 build:
