@@ -129,12 +129,13 @@ doc-build:
     cargo doc --no-deps --document-private-items
     @echo "✓ Documentation generated at target/doc/{{ crate_name }}/index.html"
 
-# Generate SBOM for Dependecy Track
+# Generate SBOM for Dependency Track
 sbom:
-    cargo sbom --output-format cyclone_dx_json_1_6 >> target/sbom-cyclone_dx_1_6.json
+    mkdir -p target
+    cargo sbom --output-format cyclone_dx_json_1_6 > target/sbom-cyclone_dx_1_6.json
 
-# Upload SBOM to Dependency Track (requires DT_API_KEY, DT_PROJECT_UUID, DT_BASE_URL env vars)
-sbom-upload:
+# Upload a freshly generated SBOM to Dependency Track (requires DT_API_KEY, DT_PROJECT_UUID, DT_BASE_URL env vars)
+sbom-upload: sbom
     #!/usr/bin/env bash
     set -euo pipefail
     echo "Uploading SBOM to Dependency Track..."
@@ -156,7 +157,6 @@ sbom-upload:
         echo "  just sbom-upload"
         exit 1
     fi
-    just sbom
     curl -X POST "${DT_BASE_URL}/api/v1/bom" \
         -H "X-Api-Key: ${DT_API_KEY}" \
         -H "Content-Type: multipart/form-data" \
