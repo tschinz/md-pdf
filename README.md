@@ -12,7 +12,7 @@ A fast, lightweight command-line tool that converts Markdown files to profession
 
 ## Features
 
-- 🚀 **Fast conversion** powered by Typst
+- 🚀 **Fast conversion** powered by a built-in Typst compiler
 - 🎨 **Professional output** with built-in templates
 - ⚙️ **Zero configuration** - works out of the box
 - 👀 **Watch mode** for live preview
@@ -24,25 +24,11 @@ A fast, lightweight command-line tool that converts Markdown files to profession
 
 ## Installation
 
-### Prerequisites
+md-pdf is a single self-contained binary: the [Typst](https://typst.app) compiler is built in, so there is nothing else to install. Typst packages used by the templates (e.g. `@preview/cmarker`) are downloaded automatically on first use and cached.
 
-### Typst
+### Fonts (optional)
 
-Install [Typst CLI](https://github.com/typst/typst):
-
-```bash
-# macOS
-brew install typst
-
-# Or download from GitHub releases
-# https://github.com/typst/typst/releases
-```
-
-### Fonts
-
-The default template `simple` uses some fonts which are optional.
-
-Install [Iosevka](https://typeof.net/Iosevka/)
+Templates fall back to the bundled default fonts. For their intended look, install [Fira Sans and Fira Mono](https://github.com/mozilla/Fira) and [Iosevka](https://typeof.net/Iosevka/).
 
 ### Install md-pdf
 

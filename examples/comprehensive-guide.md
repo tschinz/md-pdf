@@ -42,7 +42,9 @@ md-pdf bridges the gap between Markdown's simplicity and PDF's professional pres
 
 ## Prerequisites
 
-Before installing md-pdf, you need:
+md-pdf is a single self-contained binary with the Typst compiler built in, so no
+separate Typst installation is needed. Typst packages used by the templates are
+downloaded automatically on first use and cached.
 
 ### Rust Toolchain (Optional, for building from source)
 
@@ -62,23 +64,9 @@ cargo --version
 
 Visit [rust-lang.org](https://www.rust-lang.org/tools/install) for more details.
 
-### Typst CLI (Required)
-
-Typst is the typesetting engine that powers PDF generation:
-
-```bash
-# Install via cargo (recommended)
-cargo install typst-cli
-
-# Verify installation
-typst --version
-```
-
-Visit [typst.app](https://typst.app/) for more details.
-
 ### Fonts (optional)
 
-Some templates using custom fonts. If they are not installed a fallback will be used.
+Some templates use custom fonts. If they are not installed, Typst's bundled default fonts are used as a fallback.
 
 - [Fira Sans and Fira Mono](https://github.com/mozilla/Fira)
 - [Iosevka](https://typeof.net/Iosevka/)
