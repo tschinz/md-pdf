@@ -30,6 +30,7 @@ mod config;
 mod convert;
 mod frontmatter;
 mod link_checker;
+mod world;
 
 use args::Args;
 use config::Config;

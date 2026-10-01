@@ -18,16 +18,22 @@ exclude = [
 
 [dependencies]
 clap = { version = "4.5.57", features = ["derive"] }
-duct = "1.1.1"
 serde = { version = "1.0", features = ["derive"] }
 serde_yaml = "0.9"
 ron = "0.8"
 dirs = "6.0"
 notify = "6.1"
-# HTTP client for the link checker
-ureq = "3"
 regex = "1.12"
 opener = "0.7"
+# HTTP client for the link checker, shared with the Typst package downloader
+ureq = "3"
+# Embedded Typst compiler, built on typst-kit (the toolkit behind the Typst CLI):
+# system and bundled fonts, @preview package downloads, CLI-style diagnostics
+typst = "0.15"
+typst-kit = { version = "0.15", features = ["embedded-fonts", "scan-fonts", "system-files", "emit-diagnostics", "datetime"] }
+typst-layout = "0.15"
+typst-pdf = "0.15"
+comemo = "0.5"
 
 [dev-dependencies]
 tempfile = "3.24"

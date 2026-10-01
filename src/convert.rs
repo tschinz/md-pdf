@@ -1,18 +1,18 @@
 //! # PDF Conversion Engine
 //!
 //! This module provides the core functionality for converting Markdown files to PDF
-//! using the Typst typesetting system. It handles template processing, front matter
+//! using the embedded Typst compiler. It handles template processing, front matter
 //! parsing, file watching for live preview, and template management.
 
 use crate::config::Config;
 use crate::frontmatter::{frontmatter_to_typst_vars, parse_frontmatter};
-use duct::cmd;
+use crate::world::compile_pdf;
 use notify::{Config as NotifyConfig, RecommendedWatcher, RecursiveMode, Watcher};
 use std::fs;
 use std::path::Path;
 use std::sync::mpsc::channel;
 
-/// Converts a Markdown file to PDF using typst-cli with the specified template.
+/// Converts a Markdown file to PDF using the embedded Typst compiler.
 ///
 /// This is the main conversion function that orchestrates the entire process of
 /// transforming a markdown file into a professional PDF document.
@@ -44,8 +44,8 @@ use std::sync::mpsc::channel;
 /// - The markdown file doesn't exist or can't be read
 /// - The configuration system fails to load
 /// - The specified template cannot be found or loaded
-/// - Typst CLI is not installed or not in PATH
-/// - File system operations fail (temp file creation, etc.)
+/// - The template fails to compile (a required package cannot be downloaded,
+///   a referenced file is missing, or the template contains an error)
 /// - The output directory is not writable
 ///
 /// # Panics
@@ -94,100 +94,70 @@ pub fn convert_to_pdf(md_file: &Path, output: &str, template_option: Option<&Str
   // Get absolute paths for proper execution context
   let md_file_absolute = md_file.canonicalize()?;
   let md_dir = md_file_absolute.parent().unwrap_or_else(|| Path::new("."));
+  let md_name = md_file_absolute
+    .file_name()
+    .ok_or("markdown path has no file name")?
+    .to_string_lossy()
+    .into_owned();
   let output_absolute = Path::new(output).canonicalize().unwrap_or_else(|_| {
     // If output doesn't exist, make it absolute relative to current dir
     std::env::current_dir().unwrap().join(output)
   });
 
-  // Create temporary file with processed markdown content in the same directory as the source
-  let temp_md_filename = format!("{}.temp.md", md_file_absolute.file_stem().unwrap().to_str().unwrap());
-  let temp_md_path = md_dir.join(&temp_md_filename);
-  fs::write(&temp_md_path, &markdown_content)?;
-
-  // Build typst command arguments
-  let mut args = vec![
-    "compile".to_string(),
-    "--root".to_string(),
-    md_dir.to_str().unwrap().to_string(),
-    "--input".to_string(),
-    format!("default_author={}", default_author),
-    "--input".to_string(),
-    format!("filepath={}", temp_md_filename),
-    "--input".to_string(),
-    format!("language={}", effective_language),
-    "--input".to_string(),
-    format!("toc={}", effective_toc),
+  // Inputs exposed to the template as `sys.inputs`
+  let mut inputs = vec![
+    ("default_author".to_string(), default_author.to_string()),
+    ("filepath".to_string(), md_name.clone()),
+    ("language".to_string(), effective_language.to_string()),
+    ("toc".to_string(), effective_toc.to_string()),
   ];
+  match &front_matter {
+    Some(fm) => inputs.extend(frontmatter_to_typst_vars(fm)),
+    None => inputs.push(("has_frontmatter".to_string(), "false".to_string())),
+  }
 
-  // Add front matter variables if present
+  // Name the template after its file so diagnostics point to e.g. `simple.typ:12:3`
+  let template_file = format!(
+    "{}.typ",
+    Path::new(template_name).file_stem().and_then(|stem| stem.to_str()).unwrap_or("template")
+  );
+  let pdf = compile_pdf(&template_file, &template_string, md_dir, &md_name, &markdown_content, inputs)?;
+  fs::write(&output_absolute, pdf)?;
+
   if let Some(fm) = &front_matter {
-    let fm_vars = frontmatter_to_typst_vars(fm);
-    for (key, value) in fm_vars {
-      args.push("--input".to_string());
-      args.push(format!("{key}={value}"));
+    if let Some(title) = &fm.title {
+      println!("✓ Document: {title}");
     }
-  } else {
-    // Add default flag to indicate no front matter
-    args.push("--input".to_string());
-    args.push("has_frontmatter=false".to_string());
-  }
-
-  args.push("-".to_string());
-  args.push(output_absolute.to_str().unwrap().to_string());
-
-  let result = cmd("typst", &args)
-    .dir(md_dir) // Execute typst from markdown file's directory
-    .stdin_bytes(template_string.as_bytes())
-    .run();
-
-  // Clean up temporary file
-  if temp_md_path.exists() {
-    let _ = fs::remove_file(&temp_md_path);
-  }
-
-  match result {
-    Ok(_) => {
-      if let Some(fm) = &front_matter {
-        if let Some(title) = &fm.title {
-          println!("✓ Document: {title}");
-        }
-        if let Some(author) = &fm.author {
-          println!("✓ Author: {author}");
-        }
-        if let Some(timestamp) = &fm.timestamp {
-          println!("✓ Date: {timestamp}");
-        }
-        if let Some(version) = &fm.version {
-          println!("✓ Version: {version}");
-        }
-        println!("✓ Language: {effective_language}");
-        if let Some(template) = &fm.template {
-          if template_option.is_some() && template_option != Some(&"none".to_string()) {
-            println!(
-              "✓ Template (CLI override): {} (front matter had: {})",
-              effective_template.unwrap_or(&"none".to_string()),
-              template
-            );
-          } else {
-            println!("✓ Template (from front matter): {template}");
-          }
-        } else if template_option.is_some() {
-          println!("✓ Template (CLI): {}", template_option.unwrap_or(&"none".to_string()));
-        }
-        println!("✓ TOC: {effective_toc}");
-        if !fm.tags.is_empty() {
-          println!("✓ Tags: {}", fm.tags.join(", "));
-        }
+    if let Some(author) = &fm.author {
+      println!("✓ Author: {author}");
+    }
+    if let Some(timestamp) = &fm.timestamp {
+      println!("✓ Date: {timestamp}");
+    }
+    if let Some(version) = &fm.version {
+      println!("✓ Version: {version}");
+    }
+    println!("✓ Language: {effective_language}");
+    if let Some(template) = &fm.template {
+      if template_option.is_some() && template_option != Some(&"none".to_string()) {
+        println!(
+          "✓ Template (CLI override): {} (front matter had: {})",
+          effective_template.unwrap_or(&"none".to_string()),
+          template
+        );
+      } else {
+        println!("✓ Template (from front matter): {template}");
       }
-      println!("✓ Successfully converted '{}' to '{}'", md_file_absolute.display(), output_absolute.display());
-      Ok(())
+    } else if template_option.is_some() {
+      println!("✓ Template (CLI): {}", template_option.unwrap_or(&"none".to_string()));
     }
-    Err(e) => {
-      eprintln!("✗ Error during conversion: {e}");
-      eprintln!("Make sure typst-cli is installed and accessible in your PATH");
-      Err(e.into())
+    println!("✓ TOC: {effective_toc}");
+    if !fm.tags.is_empty() {
+      println!("✓ Tags: {}", fm.tags.join(", "));
     }
   }
+  println!("✓ Successfully converted '{}' to '{}'", md_file_absolute.display(), output_absolute.display());
+  Ok(())
 }
 
 /// Open a file with the system's default application.
