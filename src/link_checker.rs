@@ -48,14 +48,16 @@ pub fn check_links_in_file(md_file: &Path) -> Result<(), Box<dyn std::error::Err
   let mut successful_links = 0;
   let mut failed_links = 0;
 
-  // Create a blocking HTTP client
-  let client = reqwest::blocking::Client::builder()
-    .timeout(Duration::from_secs(10))
+  // Create an HTTP client that reports non-2xx statuses as responses, not errors
+  let client: ureq::Agent = ureq::Agent::config_builder()
+    .timeout_global(Some(Duration::from_secs(10)))
     .user_agent("md-pdf-link-checker/1.0")
-    .build()?;
+    .http_status_as_error(false)
+    .build()
+    .into();
 
   for link in links {
-    match client.head(&link).send() {
+    match client.head(&link).call() {
       Ok(response) => {
         if response.status().is_success() {
           println!("✅ {link}");
@@ -67,7 +69,7 @@ pub fn check_links_in_file(md_file: &Path) -> Result<(), Box<dyn std::error::Err
       }
       Err(e) => {
         // Try GET request if HEAD fails (some servers don't support HEAD)
-        match client.get(&link).send() {
+        match client.get(&link).call() {
           Ok(response) => {
             if response.status().is_success() {
               println!("✅ {link} (via GET)");
