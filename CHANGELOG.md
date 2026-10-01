@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 2026-10-01
+
+### 🚀 Features
+
+- Embed the Typst compiler ([d967fe8](https://github.com/tschinz/md-pdf/commit/d967fe8c2c627ba94c685f389194446c9927f698) - zas)
+
+### 💼 Other
+
+- Strip symbols from release binaries ([9218432](https://github.com/tschinz/md-pdf/commit/92184328329df9acc122653acb388ea10f6c6ba9) - zas)
+
+### 🚜 Refactoring
+
+- *(link-checker)* Replace reqwest with ureq ([4cbdf96](https://github.com/tschinz/md-pdf/commit/4cbdf969fac86c055864b49f2349f98214422b5f) - zas)
+- *(templates)* Remove dead .temp.md filename branch ([b33889c](https://github.com/tschinz/md-pdf/commit/b33889c43978a7d850969ada7e886067253e7f66) - zas)
+
+### 📚 Documentation
+
+- Drop the Typst installation prerequisite ([fe96a9a](https://github.com/tschinz/md-pdf/commit/fe96a9a240eb5d4fd17bcc14093fbfc25c0b9c23) - zas)
+- *(readme)* Unwrap hard-wrapped paragraphs ([8596918](https://github.com/tschinz/md-pdf/commit/8596918f51e7411e936670be90d0c0eb834dd679) - zas)
+
+### ⚙️ Miscellaneous Tasks
+
+- *(deps)* Update dirs to 6.0 ([0a3a96c](https://github.com/tschinz/md-pdf/commit/0a3a96cb55b4d06955617753ca36821552be1e50) - zas)
+- *(justfile)* Remove typst-cli install and check recipes ([d5188e6](https://github.com/tschinz/md-pdf/commit/d5188e6560719840029350f68b70a7a85d3465f3) - zas)
+- *(release)* Bump version to 0.3.0 ([45847e5](https://github.com/tschinz/md-pdf/commit/45847e5e8025dd451cae431189b90b139c736c35) - zas)
+- *(examples)* Regenerate example PDFs ([58d2933](https://github.com/tschinz/md-pdf/commit/58d2933f6482eb985796b18d04448fea85054fee) - zas)
+
+
+**Full Changelog**: [v0.2.0...0.3.0](https://github.com/tschinz/md-pdf/compare/v0.2.0...0.3.0)
+
 ## [0.2.0] - 2026-09-24
 
 ### 🚀 Features
