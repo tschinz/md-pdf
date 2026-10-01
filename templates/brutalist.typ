@@ -1,7 +1,7 @@
 // Brutalist Template
 // Raw, bold, stark design with high contrast
 #import "@preview/cmarker:0.1.10"
-#import "@preview/mitex:0.2.6": mitex
+#import "@preview/mitex:0.2.7": mitex
 
 // Get system inputs
 #let filepath = sys.inputs.at("filepath", default: "input.md")
