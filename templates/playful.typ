@@ -40,8 +40,6 @@
   let file = path-parts.last()
   if file.ends-with(".md") {
     file.slice(0, file.len() - 3)
-  } else if file.ends-with(".temp.md") {
-    file.slice(0, file.len() - 8)
   } else {
     file
   }
